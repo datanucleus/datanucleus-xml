@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DataNucleus XML
+Bundle-SymbolicName: org.datanucleus.store.xml;singleton:=true
+Bundle-Version: 3.2.1
+Bundle-Vendor: DataNucleus
+Require-Bundle: org.datanucleus;bundle-version="3.2.0.m3"
+Import-Package: javax.activation

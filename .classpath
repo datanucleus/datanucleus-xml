@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry excluding="src/resources/|src/java/" including="META-INF/MANIFEST.MF|plugin.xml" kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/local.repository/javax.xml/jars/jaxb-impl-2.1.jar"/>
+	<classpathentry kind="lib" path="/local.repository/javax.xml/jars/jsr173_api-1.0.jar"/>
+	<classpathentry kind="lib" path="/local.repository/javax.xml.bind/jars/jaxb-api-2.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -18,9 +18,9 @@
     </description>
 
     <scm>
-        <connection>scm:git:git://github.com/datanucleus/datanucleus-xml.git</connection>
-        <url>scm:git:git://github.com/datanucleus/datanucleus-xml.git</url>
-        <developerConnection>scm:git:git://github.com/datanucleus/datanucleus-xml.git</developerConnection>
+        <connection>scm:git:git@github.com:datanucleus/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:datanucleus/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/datanucleus/${project.artifactId}</url>
     </scm>
 
     <properties>

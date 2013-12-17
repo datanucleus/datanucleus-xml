@@ -34,8 +34,8 @@ import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.query.AbstractCandidateLazyLoadList;
+import org.datanucleus.store.xml.XMLStoreManager;
 import org.datanucleus.store.xml.XMLUtils;
-import org.datanucleus.store.xml.binder.JAXBRuntimeBinder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -195,7 +195,7 @@ public class XMLCandidateList extends AbstractCandidateLazyLoadList
                                 {
                                     try
                                     {
-                                        Object obj = JAXBRuntimeBinder.unmarshall(cls, el.getChildNodes().item(i),
+                                        Object obj = ((XMLStoreManager)ec.getStoreManager()).getJAXBHandler().unmarshall(cls, el.getChildNodes().item(i),
                                             ec.getMetaDataManager(), clr);
                                         XMLUtils.prepareXMLObjectForUse(obj, ec, cmd);
                                         return obj;

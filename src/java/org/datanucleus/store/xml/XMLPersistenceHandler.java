@@ -40,7 +40,6 @@ import org.datanucleus.store.AbstractPersistenceHandler;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.fieldmanager.PersistFieldManager;
-import org.datanucleus.store.xml.binder.JAXBRuntimeBinder;
 import org.datanucleus.store.xml.fieldmanager.FetchFieldManager;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
@@ -119,7 +118,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             Node classnode = getNodeForClass(doc, acmd);
 
             // Marshall the object
-            JAXBRuntimeBinder.marshall(op.getObject(), classnode, this.storeMgr.getNucleusContext().getMetaDataManager(), 
+            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, this.storeMgr.getNucleusContext().getMetaDataManager(), 
                 op.getExecutionContext().getClassLoaderResolver());
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
@@ -208,7 +207,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             // Remove old node and replace with new
             Node node = XMLUtils.findNode(doc, op);
             node.getParentNode().removeChild(node);
-            JAXBRuntimeBinder.marshall(op.getObject(), classnode, this.storeMgr.getNucleusContext().getMetaDataManager(), 
+            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, this.storeMgr.getNucleusContext().getMetaDataManager(), 
                 op.getExecutionContext().getClassLoaderResolver());
 
             // Handle reachability so any reachable objects in the updated fields are also persisted

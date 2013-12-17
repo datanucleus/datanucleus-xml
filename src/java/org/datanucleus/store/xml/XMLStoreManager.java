@@ -40,6 +40,7 @@ import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.valuegenerator.AbstractDatastoreGenerator;
 import org.datanucleus.store.valuegenerator.ValueGenerationConnectionProvider;
 import org.datanucleus.store.valuegenerator.ValueGenerator;
+import org.datanucleus.store.xml.jaxbri.JAXBRIHandler;
 import org.datanucleus.util.ClassUtils;
 import org.w3c.dom.Document;
 
@@ -49,6 +50,7 @@ import org.w3c.dom.Document;
  */
 public class XMLStoreManager extends AbstractStoreManager
 {
+    JAXBHandler jaxbHandler;
     MetaDataListener metadataListener;
 
     /**
@@ -61,9 +63,11 @@ public class XMLStoreManager extends AbstractStoreManager
     {
         super("xml", clr, ctx, props);
 
+        // TODO Support other JAXB implementations
         // Check if JAXB API/RI JARs are in CLASSPATH
         ClassUtils.assertClassForJarExistsInClasspath(clr, "javax.xml.bind.JAXBContext", "jaxb-api.jar");
         ClassUtils.assertClassForJarExistsInClasspath(clr, "com.sun.xml.bind.api.JAXBRIContext", "jaxb-impl.jar");
+        jaxbHandler = new JAXBRIHandler();
 
         // Handler for metadata
         metadataListener = new XMLMetaDataListener();
@@ -82,6 +86,11 @@ public class XMLStoreManager extends AbstractStoreManager
     {
         nucleusContext.getMetaDataManager().deregisterListener(metadataListener);
         super.close();
+    }
+
+    public JAXBHandler getJAXBHandler()
+    {
+        return jaxbHandler;
     }
 
     /* (non-Javadoc)

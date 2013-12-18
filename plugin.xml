@@ -42,6 +42,7 @@ Contributors:
 
     <!-- PERSISTENCE PROPERTIES -->
     <extension point="org.datanucleus.persistence_properties">
+        <persistence-property name="datanucleus.xml.jaxbHandlerClass" datastore="true" value="org.datanucleus.store.xml.jaxbri.JAXBRIHandler"/>
         <persistence-property name="datanucleus.xml.indentSize" datastore="true" value="4"
             validator="org.datanucleus.properties.IntegerPropertyValidator"/>
     </extension>

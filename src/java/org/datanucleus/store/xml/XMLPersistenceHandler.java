@@ -118,8 +118,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             Node classnode = getNodeForClass(doc, acmd);
 
             // Marshall the object
-            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, this.storeMgr.getNucleusContext().getMetaDataManager(), 
-                op.getExecutionContext().getClassLoaderResolver());
+            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, op.getExecutionContext().getClassLoaderResolver());
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
                 NucleusLogger.DATASTORE_PERSIST.debug(LOCALISER_XML.msg("XML.ExecutionTime", 
@@ -207,8 +206,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             // Remove old node and replace with new
             Node node = XMLUtils.findNode(doc, op);
             node.getParentNode().removeChild(node);
-            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, this.storeMgr.getNucleusContext().getMetaDataManager(), 
-                op.getExecutionContext().getClassLoaderResolver());
+            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, op.getExecutionContext().getClassLoaderResolver());
 
             // Handle reachability so any reachable objects in the updated fields are also persisted
             op.provideFields(fieldNumbers, new PersistFieldManager(op, false));

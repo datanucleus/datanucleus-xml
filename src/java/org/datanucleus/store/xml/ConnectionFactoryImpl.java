@@ -67,7 +67,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
         String url = storeMgr.getConnectionURL();
         if (url == null)
         {
-            throw new NucleusException("you haven't specified persistence property 'datanucleus.ConnectionURL' (or alias)");
+            throw new NucleusException("You haven't specified persistence property 'datanucleus.ConnectionURL' (or alias)");
         }
         if (!url.startsWith("xml"))
         {
@@ -83,7 +83,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
 
         filename = str.substring(5);
 
-        indent = storeMgr.getIntProperty("datanucleus.xml.indentSize");
+        indent = storeMgr.getIntProperty(XMLStoreManager.XML_INDENT_SIZE_PROPERTY);
     }
 
     /**

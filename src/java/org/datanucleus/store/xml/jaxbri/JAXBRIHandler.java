@@ -22,47 +22,31 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.metadata.MetaDataManager;
-import org.datanucleus.store.xml.JAXBHandler;
-import org.w3c.dom.Node;
+import org.datanucleus.store.xml.AbstractJAXBHandler;
 
 import com.sun.xml.bind.api.JAXBRIContext;
 
 /**
  * JAXBHandler using the JAXB reference implementation.
+ * See https://github.com/gf-metro/jaxb/tree/master/jaxb-ri
  */
-public class JAXBRIHandler implements JAXBHandler
+public class JAXBRIHandler extends AbstractJAXBHandler
 {
-    /* (non-Javadoc)
-     * @see org.datanucleus.store.xml.JAXBHandler#marshall(java.lang.Object, org.w3c.dom.Node, org.datanucleus.metadata.MetaDataManager, org.datanucleus.ClassLoaderResolver)
-     */
-    @Override
-    public void marshall(Object obj, Node node, MetaDataManager mmgr, ClassLoaderResolver clr) throws JAXBException
+    public JAXBRIHandler(MetaDataManager mmgr)
     {
-        Map<String, Object> jaxbConfig = new HashMap<String, Object>();
-        //jaxbConfig.put(JAXBRIContext.DEFAULT_NAMESPACE_REMAP, "DefaultNamespace");
-        jaxbConfig.put(JAXBRIContext.ANNOTATION_READER, new JAXBRIAnnotationReader(mmgr, clr));
-
-        JAXBContext jaxbContext = JAXBContext.newInstance(new Class[]{obj.getClass()}, jaxbConfig);
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        marshaller.marshal(obj, node);
+        super(mmgr);
     }
 
-    /* (non-Javadoc)
-     * @see org.datanucleus.store.xml.JAXBHandler#unmarshall(java.lang.Class, org.w3c.dom.Node, org.datanucleus.metadata.MetaDataManager, org.datanucleus.ClassLoaderResolver)
-     */
-    @Override
-    public Object unmarshall(Class cls, Node node, MetaDataManager mmgr, ClassLoaderResolver clr) throws JAXBException
+    protected JAXBContext getJAXBContext(Class[] classes, ClassLoaderResolver clr)
+    throws JAXBException
     {
         Map<String, Object> jaxbConfig = new HashMap<String, Object>();
         //jaxbConfig.put(JAXBRIContext.DEFAULT_NAMESPACE_REMAP, "DefaultNamespace");
         jaxbConfig.put(JAXBRIContext.ANNOTATION_READER, new JAXBRIAnnotationReader(mmgr, clr));
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(new Class[]{cls}, jaxbConfig);
-        return jaxbContext.createUnmarshaller().unmarshal(node);
+        return JAXBContext.newInstance(classes, jaxbConfig);
     }
 }

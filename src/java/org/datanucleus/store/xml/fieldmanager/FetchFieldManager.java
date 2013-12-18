@@ -63,8 +63,7 @@ public class FetchFieldManager extends AbstractFieldManager
         node = XMLUtils.findNode(doc, op);
         try
         {
-            value = ((XMLStoreManager)ec.getStoreManager()).getJAXBHandler().unmarshall(op.getObject().getClass(), node, op.getExecutionContext().getMetaDataManager(), 
-                op.getExecutionContext().getClassLoaderResolver());
+            value = ((XMLStoreManager)ec.getStoreManager()).getJAXBHandler().unmarshall(op.getObject().getClass(), node, op.getExecutionContext().getClassLoaderResolver());
         }
         catch (JAXBException e)
         {

@@ -31,17 +31,20 @@ import javax.xml.xpath.XPathFactory;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.NucleusContext;
+import org.datanucleus.exceptions.ClassNotResolvedException;
+import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.FieldRole;
 import org.datanucleus.metadata.MetaDataListener;
+import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.store.AbstractStoreManager;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.valuegenerator.AbstractDatastoreGenerator;
 import org.datanucleus.store.valuegenerator.ValueGenerationConnectionProvider;
 import org.datanucleus.store.valuegenerator.ValueGenerator;
-import org.datanucleus.store.xml.jaxbri.JAXBRIHandler;
 import org.datanucleus.util.ClassUtils;
+import org.datanucleus.util.NucleusLogger;
 import org.w3c.dom.Document;
 
 /**
@@ -50,6 +53,9 @@ import org.w3c.dom.Document;
  */
 public class XMLStoreManager extends AbstractStoreManager
 {
+    public static final String JAXB_HANDLER_CLASS_PROPERTY = "datanucleus.xml.jaxbHandlerClass";
+    public static final String XML_INDENT_SIZE_PROPERTY = "datanucleus.xml.indentSize";
+
     JAXBHandler jaxbHandler;
     MetaDataListener metadataListener;
 
@@ -63,11 +69,19 @@ public class XMLStoreManager extends AbstractStoreManager
     {
         super("xml", clr, ctx, props);
 
-        // TODO Support other JAXB implementations
-        // Check if JAXB API/RI JARs are in CLASSPATH
         ClassUtils.assertClassForJarExistsInClasspath(clr, "javax.xml.bind.JAXBContext", "jaxb-api.jar");
-        ClassUtils.assertClassForJarExistsInClasspath(clr, "com.sun.xml.bind.api.JAXBRIContext", "jaxb-impl.jar");
-        jaxbHandler = new JAXBRIHandler();
+
+        String jaxbHandlerClassName = getStringProperty(JAXB_HANDLER_CLASS_PROPERTY);
+        try
+        {
+            Class cls = clr.classForName(jaxbHandlerClassName);
+            jaxbHandler = (JAXBHandler) ClassUtils.newInstance(cls, new Class[] {MetaDataManager.class}, new Object[]{ctx.getMetaDataManager()});
+        }
+        catch (ClassNotResolvedException cnre)
+        {
+            NucleusLogger.DATASTORE.error("Could not find jaxb handler class " + jaxbHandlerClassName, cnre);
+            throw new NucleusUserException("The specified JAXB Handler class \"" + jaxbHandlerClassName + "\" was not found!").setFatal();
+        }
 
         // Handler for metadata
         metadataListener = new XMLMetaDataListener();
@@ -196,7 +210,6 @@ public class XMLStoreManager extends AbstractStoreManager
     public Collection getSupportedOptions()
     {
         Set<String> set = new HashSet<String>();
-        set.add("DatastoreIdentity");        
         set.add("ApplicationIdentity");
         set.add("TransactionIsolationLevel.read-committed");
         set.add("ORM");

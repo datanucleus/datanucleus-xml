@@ -20,7 +20,6 @@ package org.datanucleus.store.xml;
 import javax.xml.bind.JAXBException;
 
 import org.datanucleus.ClassLoaderResolver;
-import org.datanucleus.metadata.MetaDataManager;
 import org.w3c.dom.Node;
 
 /**
@@ -32,21 +31,19 @@ public interface JAXBHandler
      * Method to marshall an object into XML for storing.
      * @param obj The object
      * @param node The node where we store it
-     * @param mmgr MetaData manager
      * @param clr ClassLoader resolver
      * @throws JAXBException
      */
-    public void marshall(Object obj, Node node, MetaDataManager mmgr, ClassLoaderResolver clr) 
+    public void marshall(Object obj, Node node, ClassLoaderResolver clr) 
     throws JAXBException;
 
     /**
      * Method to unmarshall a node from XML into an object.
      * @param cls Type of object
      * @param node The node to be unmarshalled
-     * @param mmgr MetaData manager
      * @param clr ClassLoader resolver
      * @throws JAXBException
      */
-    public Object unmarshall(Class cls, Node node, MetaDataManager mmgr, ClassLoaderResolver clr) 
+    public Object unmarshall(Class cls, Node node, ClassLoaderResolver clr) 
     throws JAXBException;
 }

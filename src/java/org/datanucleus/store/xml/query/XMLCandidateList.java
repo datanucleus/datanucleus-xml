@@ -195,8 +195,7 @@ public class XMLCandidateList extends AbstractCandidateLazyLoadList
                                 {
                                     try
                                     {
-                                        Object obj = ((XMLStoreManager)ec.getStoreManager()).getJAXBHandler().unmarshall(cls, el.getChildNodes().item(i),
-                                            ec.getMetaDataManager(), clr);
+                                        Object obj = ((XMLStoreManager)ec.getStoreManager()).getJAXBHandler().unmarshall(cls, el.getChildNodes().item(i), clr);
                                         XMLUtils.prepareXMLObjectForUse(obj, ec, cmd);
                                         return obj;
                                     }

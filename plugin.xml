@@ -40,4 +40,9 @@ Contributors:
         <valuegenerator name="generate-id" class-name="org.datanucleus.store.xml.valuegenerator.GenerateIDGenerator" datastore="xml"/>
     </extension>            
 
+    <!-- PERSISTENCE PROPERTIES -->
+    <extension point="org.datanucleus.persistence_properties">
+        <persistence-property name="datanucleus.xml.indentSize" datastore="true" value="4"
+            validator="org.datanucleus.properties.IntegerPropertyValidator"/>
+    </extension>
 </plugin>

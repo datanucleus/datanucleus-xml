@@ -45,12 +45,14 @@ import org.xml.sax.SAXException;
 
 /**
  * Implementation of a ConnectionFactory for XML.
- * Transactional : Holds a "connection" for the duration of the transaction.
- * Non-transactional : Obtains the "connection" and closes it after the operation.
+ * The connectionUrl defines the XML filename to be used. Also support persistence property "datanucleus.xml.indentSize" to control
+ * the indenting used in the XML file.
  */
 public class ConnectionFactoryImpl extends AbstractConnectionFactory
 {
     String filename = null;
+
+    int indent = 4;
 
     /**
      * Constructor.
@@ -80,6 +82,8 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
         }
 
         filename = str.substring(5);
+
+        indent = storeMgr.getIntProperty("datanucleus.xml.indentSize");
     }
 
     /**
@@ -150,12 +154,15 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                 try
                 {
                     TransformerFactory tf = TransformerFactory.newInstance();
-                    Transformer m = tf.newTransformer();
+                    tf.setAttribute("indent-number", indent);
+                    Transformer t = tf.newTransformer();
+                    t.setOutputProperty(OutputKeys.INDENT, "yes");
+                    t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indent);
+
                     DOMSource source = new DOMSource((Document)conn);
                     FileOutputStream os = new FileOutputStream(file);
                     StreamResult result = new StreamResult(os);
-                    m.setOutputProperty(OutputKeys.INDENT, "yes");
-                    m.transform(source, result);
+                    t.transform(source, result);
                     os.close();
                     conn = null;
                 }
@@ -184,12 +191,15 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                 try
                 {
                     TransformerFactory tf = TransformerFactory.newInstance();
-                    Transformer m = tf.newTransformer();
+                    tf.setAttribute("indent-number", indent);
+                    Transformer t = tf.newTransformer();
+                    t.setOutputProperty(OutputKeys.INDENT, "yes");
+                    t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indent);
+
                     DOMSource source = new DOMSource((Document)conn);
                     FileOutputStream os = new FileOutputStream(file);
                     StreamResult result = new StreamResult(os);
-                    m.setOutputProperty(OutputKeys.INDENT, "yes");
-                    m.transform(source, result);
+                    t.transform(source, result);
                     os.close();
                 }
                 catch (Exception e)

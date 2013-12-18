@@ -46,7 +46,7 @@ import org.w3c.dom.Document;
 
 /**
  * Manager for XML datastores.
- * Relies on JAXB (API and RI) to be present.
+ * Relies on JAXB API and an implementation of JAXB to be present.
  */
 public class XMLStoreManager extends AbstractStoreManager
 {

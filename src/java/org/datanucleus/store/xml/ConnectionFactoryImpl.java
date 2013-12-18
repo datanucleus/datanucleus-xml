@@ -39,6 +39,7 @@ import org.datanucleus.store.connection.AbstractConnectionFactory;
 import org.datanucleus.store.connection.AbstractManagedConnection;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.connection.ManagedConnectionResourceListener;
+import org.datanucleus.util.NucleusLogger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -118,6 +119,8 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                     {
                         try
                         {
+                            // TODO This can cause System.out messages like "[Fatal Error] test.xml:3:1: Premature end of file." if not valid XML
+                            // e.g a single line file like "<?xml version="1.0" encoding="UTF-8" standalone="no"?>"
                             conn = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
                         }
                         catch (SAXException ex)
@@ -128,10 +131,12 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                 }
                 catch (IOException e)
                 {
+                    NucleusLogger.CONNECTION.error("Exception getting connection to XML file", e);
                     throw new NucleusException(e.getMessage(), e);
                 }
                 catch (ParserConfigurationException e)
                 {
+                    NucleusLogger.CONNECTION.error("Exception getting connection to XML file", e);
                     throw new NucleusException(e.getMessage(), e);
                 }
             }
@@ -156,6 +161,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                 }
                 catch (Exception e)
                 {
+                    NucleusLogger.CONNECTION.error("Exception closing connection to XML file", e);
                     throw new NucleusException(e.getMessage(),e);
                 }
             }
@@ -188,6 +194,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                 }
                 catch (Exception e)
                 {
+                    NucleusLogger.CONNECTION.error("Exception closing connection to XML file", e);
                     throw new NucleusException(e.getMessage(),e);
                 }
             }

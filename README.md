@@ -20,6 +20,6 @@ __Javadocs__ : [3.2](http://www.datanucleus.org/javadocs/store.xml/3.2/), [3.1](
 
 __Download(Releases)__ : [Maven Central](http://central.maven.org/maven2/org/datanucleus/datanucleus-xml)
 
-__Download(Nightly)__ : [Nightly Builds](http://central.maven.org/maven2/org/datanucleus/datanucleus-xml)
+__Download(Nightly)__ : [Nightly Builds](http://www.datanucleus.org/downloads/maven2-nightly/org/datanucleus/datanucleus-xml)
 
 __Dependencies__ : See file [pom.xml](pom.xml)

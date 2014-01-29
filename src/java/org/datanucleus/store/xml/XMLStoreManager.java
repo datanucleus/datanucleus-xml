@@ -30,7 +30,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
-import org.datanucleus.NucleusContext;
+import org.datanucleus.PersistenceNucleusContext;
 import org.datanucleus.exceptions.ClassNotResolvedException;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -65,7 +65,7 @@ public class XMLStoreManager extends AbstractStoreManager
      * @param ctx Context
      * @param props Properties for this store manager
      */
-    public XMLStoreManager(ClassLoaderResolver clr, NucleusContext ctx, Map<String, Object> props)
+    public XMLStoreManager(ClassLoaderResolver clr, PersistenceNucleusContext ctx, Map<String, Object> props)
     {
         super("xml", clr, ctx, props);
 

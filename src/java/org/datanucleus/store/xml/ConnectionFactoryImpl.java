@@ -41,6 +41,7 @@ import org.datanucleus.store.connection.AbstractManagedConnection;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.connection.ManagedConnectionResourceListener;
 import org.datanucleus.util.NucleusLogger;
+
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -174,7 +175,10 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
         private Transformer getTransformer() throws TransformerConfigurationException
         {
             TransformerFactory tf = TransformerFactory.newInstance();
-            tf.setAttribute("indent-number", indent); // Xalan supports this
+            if (tf.getClass().getName().indexOf("xalan") >= 0)
+            {
+                tf.setAttribute("indent-number", indent); // Xalan supports this
+            } // TODO Add other XSLT variants here if they support indent size
             Transformer t = tf.newTransformer();
             t.setOutputProperty(OutputKeys.INDENT, "yes");
             t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indent);

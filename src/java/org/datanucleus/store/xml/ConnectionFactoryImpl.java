@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -153,15 +154,10 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
             {
                 try
                 {
-                    TransformerFactory tf = TransformerFactory.newInstance();
-                    tf.setAttribute("indent-number", indent);
-                    Transformer t = tf.newTransformer();
-                    t.setOutputProperty(OutputKeys.INDENT, "yes");
-                    t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indent);
-
                     DOMSource source = new DOMSource((Document)conn);
                     FileOutputStream os = new FileOutputStream(file);
                     StreamResult result = new StreamResult(os);
+                    Transformer t = getTransformer();
                     t.transform(source, result);
                     os.close();
                     conn = null;
@@ -173,6 +169,17 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                 }
             }
             super.release();
+        }
+
+        private Transformer getTransformer() throws TransformerConfigurationException
+        {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            tf.setAttribute("indent-number", indent); // Xalan supports this
+            Transformer t = tf.newTransformer();
+            t.setOutputProperty(OutputKeys.INDENT, "yes");
+            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indent);
+
+            return t;
         }
 
         public void close()
@@ -190,15 +197,10 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
             {
                 try
                 {
-                    TransformerFactory tf = TransformerFactory.newInstance();
-                    tf.setAttribute("indent-number", indent);
-                    Transformer t = tf.newTransformer();
-                    t.setOutputProperty(OutputKeys.INDENT, "yes");
-                    t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indent);
-
                     DOMSource source = new DOMSource((Document)conn);
                     FileOutputStream os = new FileOutputStream(file);
                     StreamResult result = new StreamResult(os);
+                    Transformer t = getTransformer();
                     t.transform(source, result);
                     os.close();
                 }

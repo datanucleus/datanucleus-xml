@@ -215,7 +215,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
             TransformerFactory tf = TransformerFactory.newInstance();
             try
             {
-                tf.setAttribute("indent-number", indent); // Xalan supports this
+                tf.setAttribute("indent-number", indent); // JDK-repackaged Xalan supports this
             }
             catch (IllegalArgumentException iae)
             {}

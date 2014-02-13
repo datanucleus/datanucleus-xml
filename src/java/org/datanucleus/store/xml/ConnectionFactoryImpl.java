@@ -172,20 +172,6 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
             super.release();
         }
 
-        private Transformer getTransformer() throws TransformerConfigurationException
-        {
-            TransformerFactory tf = TransformerFactory.newInstance();
-            if (tf.getClass().getName().indexOf("xalan") >= 0)
-            {
-                tf.setAttribute("indent-number", indent); // Xalan supports this
-            } // TODO Add other XSLT variants here if they support indent size
-            Transformer t = tf.newTransformer();
-            t.setOutputProperty(OutputKeys.INDENT, "yes");
-            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indent);
-
-            return t;
-        }
-
         public void close()
         {
             if (conn == null)
@@ -222,6 +208,23 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                     ((ManagedConnectionResourceListener)listeners.get(i)).managedConnectionPostClose();
                 }
             }
+        }
+
+        private Transformer getTransformer() throws TransformerConfigurationException
+        {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            try
+            {
+                tf.setAttribute("indent-number", indent); // Xalan supports this
+            }
+            catch (IllegalArgumentException iae)
+            {}
+
+            Transformer t = tf.newTransformer();
+            t.setOutputProperty(OutputKeys.INDENT, "yes");
+            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "" + indent);
+
+            return t;
         }
 
         public XAResource getXAResource()

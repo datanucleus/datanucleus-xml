@@ -34,6 +34,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.datanucleus.ExecutionContext;
+import org.datanucleus.PropertyNames;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.AbstractConnectionFactory;
@@ -41,7 +42,6 @@ import org.datanucleus.store.connection.AbstractManagedConnection;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.connection.ManagedConnectionResourceListener;
 import org.datanucleus.util.NucleusLogger;
-
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -69,7 +69,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
         String url = storeMgr.getConnectionURL();
         if (url == null)
         {
-            throw new NucleusException("You haven't specified persistence property 'datanucleus.ConnectionURL' (or alias)");
+            throw new NucleusException("You haven't specified persistence property '" + PropertyNames.PROPERTY_CONNECTION_URL + "' (or alias)");
         }
         if (!url.startsWith("xml"))
         {

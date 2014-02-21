@@ -383,35 +383,36 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                 NucleusLogger.DATASTORE_RETRIEVE.debug(LOCALISER_XML.msg("XML.Locate.Start", 
                     op.getObjectAsPrintable(), op.getInternalObjectId()));
             }
+
             ManagedConnection mconn = storeMgr.getConnection(ec);
-            String expression = null;
+            StringBuilder expression = null;
             try
             {
                 Document doc = (Document) mconn.getConnection();
 
                 // Get the XPath for the objects of this class
-                expression = XMLUtils.getXPathForClass(acmd);
-                if (expression == null)
+                expression = new StringBuilder(XMLUtils.getXPathForClass(acmd));
+                if (expression.length() == 0)
                 {
                     if (doc.getDocumentElement() != null)
                     {
-                        expression = "/" + doc.getDocumentElement().getNodeName();
+                        expression.append("/").append(doc.getDocumentElement().getNodeName());
                     }
                     else
                     {
                         // No root, so can't have an object
                         throw new NucleusObjectNotFoundException(LOCALISER_XML.msg("XML.Object.NotFound", 
-                            op.getObjectAsPrintable(), op.getInternalObjectId(), expression));
+                            op.getObjectAsPrintable(), op.getInternalObjectId(), expression.toString()));
                     }
                 }
-                expression += "/" + XMLUtils.getElementNameForClass(acmd);
+                expression.append("/").append(XMLUtils.getElementNameForClass(acmd));
                 String[] pk = acmd.getPrimaryKeyMemberNames();
                 for (int i=0; i<pk.length; i++)
                 {
                     AbstractMemberMetaData pkmmd = acmd.getMetaDataForMember(pk[i]);
                     String pkElement = XMLUtils.getElementNameForMember(pkmmd, FieldRole.ROLE_FIELD);
                     Object obj = op.provideField(acmd.getPKMemberPositions()[i]);
-                    expression += "/" + pkElement + "/text()='" + obj.toString() + "'"; 
+                    expression.append("/").append(pkElement).append("/text()='").append(obj.toString()).append("'"); 
                 }
 
                 if (ec.getStatistics() != null)
@@ -419,7 +420,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                     ec.getStatistics().incrementNumReads();
                 }
 
-                isStored = (Boolean) xpath.evaluate(expression, doc, XPathConstants.BOOLEAN);
+                isStored = (Boolean) xpath.evaluate(expression.toString(), doc, XPathConstants.BOOLEAN);
             }
             catch (Exception e)
             {
@@ -475,14 +476,14 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             if (xpath.evaluate(expression, doc, XPathConstants.NODE) == null)
             {
                 StringTokenizer xpathElement = new StringTokenizer(expression, "/");
-                String path = "";
+                StringBuilder path = new StringBuilder();
                 String currentelement = null;
                 Node node = doc;
                 while (xpathElement.hasMoreElements())
                 {
                     currentelement = xpathElement.nextToken();
-                    path += "/" + currentelement;
-                    Node n = (Node) xpath.evaluate(path, doc, XPathConstants.NODE);
+                    path.append("/").append(currentelement);
+                    Node n = (Node) xpath.evaluate(path.toString(), doc, XPathConstants.NODE);
                     if (n == null)
                     {
                         node = node.appendChild(doc.createElement(currentelement));

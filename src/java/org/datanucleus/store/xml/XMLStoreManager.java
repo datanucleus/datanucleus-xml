@@ -125,14 +125,11 @@ public class XMLStoreManager extends AbstractStoreManager
                 return targetClassName;
             }
 
-            String[] possibleNames = new String[(subclasses != null) ? (subclasses.length+1) : 1];
+            String[] possibleNames = new String[subclasses.length+1];
             possibleNames[0] = targetClassName;
-            if (subclasses != null)
+            for (int i=0;i<subclasses.length;i++)
             {
-                for (int i=0;i<subclasses.length;i++)
-                {
-                    possibleNames[i+1] = subclasses[i];
-                }
+                possibleNames[i+1] = subclasses[i];
             }
             return getClassNameForIdentity(ec, possibleNames, id);
         }
@@ -152,23 +149,24 @@ public class XMLStoreManager extends AbstractStoreManager
     public String getClassNameForIdentity(ExecutionContext ec, String[] possibleNames, Object id)
     {
         ManagedConnection mconn = getConnection(ec);
-        String expression = null;
         try
         {
             Document doc = (Document) mconn.getConnection();
 
             ClassLoaderResolver clr = ec.getClassLoaderResolver();
             XPath xpath = XPathFactory.newInstance().newXPath();
+            StringBuilder expression = null;
             for (int i=0;i<possibleNames.length;i++)
             {
                 // Try to find an object of this possible class with the id
                 AbstractClassMetaData acmd = getMetaDataManager().getMetaDataForClass(possibleNames[i], clr);
-                expression = XMLUtils.getXPathForClass(acmd);
-                if (expression == null)
+                expression = new StringBuilder();
+                expression.append(XMLUtils.getXPathForClass(acmd));
+                if (expression.length() == 0)
                 {
                     if (doc.getDocumentElement() != null)
                     {
-                        expression = "/" + doc.getDocumentElement().getNodeName();
+                        expression.append("/" + doc.getDocumentElement().getNodeName());
                     }
                     else
                     {
@@ -176,17 +174,17 @@ public class XMLStoreManager extends AbstractStoreManager
                         continue;
                     }
                 }
-                expression += "/" + XMLUtils.getElementNameForClass(acmd);
+                expression.append('/').append(XMLUtils.getElementNameForClass(acmd));
                 String[] pk = acmd.getPrimaryKeyMemberNames();
                 for (int j=0; j<pk.length; j++)
                 {
                     AbstractMemberMetaData pkmmd = acmd.getMetaDataForMember(pk[j]);
                     String pkElement = XMLUtils.getElementNameForMember(pkmmd, FieldRole.ROLE_FIELD);
                     Object obj = ec.getApiAdapter().getTargetKeyForSingleFieldIdentity(id);
-                    expression += "/" + pkElement + "/text()='" + obj.toString() + "'"; 
+                    expression.append('/').append(pkElement).append("/text()='").append(obj.toString()).append("'"); 
                 }
 
-                if ((Boolean)xpath.evaluate(expression, doc, XPathConstants.BOOLEAN))
+                if ((Boolean)xpath.evaluate(expression.toString(), doc, XPathConstants.BOOLEAN))
                 {
                     return possibleNames[i];
                 }

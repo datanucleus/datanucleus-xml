@@ -130,12 +130,12 @@ public class XMLUtils
             try
             {
                 // Get the XPath for the objects of this class
-                String expression = XMLUtils.getXPathForClass(acmd);
-                if (expression == null)
+                StringBuilder expressionStr = new StringBuilder(XMLUtils.getXPathForClass(acmd));
+                if (expressionStr.length() == 0)
                 {
                     if (doc.getDocumentElement() != null)
                     {
-                        expression = "/" + doc.getDocumentElement().getNodeName();
+                        expressionStr.append("/").append(doc.getDocumentElement().getNodeName());
                     }
                     else
                     {
@@ -143,17 +143,17 @@ public class XMLUtils
                         return null;
                     }
                 }
-                expression += "/" + XMLUtils.getElementNameForClass(acmd);
+                expressionStr.append("/").append(XMLUtils.getElementNameForClass(acmd));
                 String[] pk = acmd.getPrimaryKeyMemberNames();
                 for (int i = 0; i < pk.length; i++)
                 {
                     AbstractMemberMetaData pkmmd = acmd.getMetaDataForMember(pk[i]);
                     String pkElement = XMLUtils.getElementNameForMember(pkmmd, FieldRole.ROLE_FIELD);
-                    expression += "/" + pkElement + "[text()='" + value + "']";
+                    expressionStr.append("/").append(pkElement).append("[text()='").append(value).append("']");
                 }
-                expression += "/..";
+                expressionStr.append("/..");
 
-                Node node = (Node) xpath.evaluate(expression, doc, XPathConstants.NODE);
+                Node node = (Node) xpath.evaluate(expressionStr.toString(), doc, XPathConstants.NODE);
                 if (node == null)
                 {
                     String[] classNames = mmgr.getSubclassesForClass(acmd.getFullClassName(), false);
@@ -220,23 +220,23 @@ public class XMLUtils
                     throw new NucleusObjectNotFoundException();
                 }
                 // Get the XPath for the objects of this class
-                String expression = XMLUtils.getXPathForClass(acmd);
-                if (expression == null)
+                StringBuilder expressionStr = new StringBuilder(XMLUtils.getXPathForClass(acmd));
+                if (expressionStr.length() == 0)
                 {
-                    expression = "/" + doc.getDocumentElement().getNodeName();
+                    expressionStr.append("/").append(doc.getDocumentElement().getNodeName());
                 }
-                expression += "/" + XMLUtils.getElementNameForClass(acmd);
+                expressionStr.append("/").append(XMLUtils.getElementNameForClass(acmd));
                 String[] pk = acmd.getPrimaryKeyMemberNames();
                 for (int i = 0; i < pk.length; i++)
                 {
                     AbstractMemberMetaData pkmmd = acmd.getMetaDataForMember(pk[i]);
                     String pkElement = XMLUtils.getElementNameForMember(pkmmd, FieldRole.ROLE_FIELD);
                     Object obj = op.provideField(acmd.getPKMemberPositions()[i]);
-                    expression += "/" + pkElement + "[text()='" + obj.toString() + "']";
+                    expressionStr.append("/").append(pkElement).append("[text()='").append(obj.toString()).append("']");
                 }
-                expression += "/..";
+                expressionStr.append("/..");
 
-                node = (Node) xpath.evaluate(expression, doc, XPathConstants.NODE);
+                node = (Node) xpath.evaluate(expressionStr.toString(), doc, XPathConstants.NODE);
             }
             catch (NucleusObjectNotFoundException e)
             {

@@ -36,6 +36,7 @@ import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.query.AbstractCandidateLazyLoadList;
 import org.datanucleus.store.xml.XMLStoreManager;
 import org.datanucleus.store.xml.XMLUtils;
+import org.datanucleus.util.NucleusLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -90,7 +91,7 @@ public class XMLCandidateList extends AbstractCandidateLazyLoadList
                 }
                 catch (XPathExpressionException e)
                 {
-                    e.printStackTrace();
+                    NucleusLogger.DATASTORE_RETRIEVE.warn("Exception evaluating XPath " + expression, e);
                 }
             }
 
@@ -174,7 +175,7 @@ public class XMLCandidateList extends AbstractCandidateLazyLoadList
                     }
                     catch (XPathExpressionException e)
                     {
-                        e.printStackTrace();
+                        NucleusLogger.DATASTORE_RETRIEVE.warn("Exception evaluating XPath " + expression, e);
                     }
                 }
 

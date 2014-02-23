@@ -33,6 +33,7 @@ import org.datanucleus.state.ObjectProvider;
 import org.datanucleus.store.fieldmanager.AbstractFieldManager;
 import org.datanucleus.store.xml.XMLStoreManager;
 import org.datanucleus.store.xml.XMLUtils;
+import org.datanucleus.util.NucleusLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -67,7 +68,7 @@ public class FetchFieldManager extends AbstractFieldManager
         }
         catch (JAXBException e)
         {
-            e.printStackTrace();
+            NucleusLogger.DATASTORE_RETRIEVE.warn("Exception unmarshalling XML", e);
         }
     }
 

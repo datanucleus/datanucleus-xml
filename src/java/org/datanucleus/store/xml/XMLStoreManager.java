@@ -39,6 +39,7 @@ import org.datanucleus.metadata.FieldRole;
 import org.datanucleus.metadata.MetaDataListener;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.store.AbstractStoreManager;
+import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.valuegenerator.AbstractDatastoreGenerator;
 import org.datanucleus.store.valuegenerator.ValueGenerationConnectionProvider;
@@ -208,9 +209,9 @@ public class XMLStoreManager extends AbstractStoreManager
     public Collection getSupportedOptions()
     {
         Set<String> set = new HashSet<String>();
-        set.add("ApplicationIdentity");
-        set.add("TransactionIsolationLevel.read-committed");
-        set.add("ORM");
+        set.add(StoreManager.OPTION_APPLICATION_ID);
+        set.add(StoreManager.OPTION_TXN_ISOLATION_READ_COMMITTED);
+        set.add(StoreManager.OPTION_ORM);
         return set;
     }
     

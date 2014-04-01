@@ -32,7 +32,7 @@ public interface JAXBHandler
      * @param obj The object
      * @param node The node where we store it
      * @param clr ClassLoader resolver
-     * @throws JAXBException
+     * @throws JAXBException If an error occurs in marshall process
      */
     public void marshall(Object obj, Node node, ClassLoaderResolver clr) 
     throws JAXBException;
@@ -42,7 +42,8 @@ public interface JAXBHandler
      * @param cls Type of object
      * @param node The node to be unmarshalled
      * @param clr ClassLoader resolver
-     * @throws JAXBException
+     * @return The unmarshalled object
+     * @throws JAXBException If an error occurs in unmarshall process
      */
     public Object unmarshall(Class cls, Node node, ClassLoaderResolver clr) 
     throws JAXBException;

@@ -28,7 +28,7 @@ import org.datanucleus.store.valuegenerator.ValueGenerationException;
 /**
  * Value generator for calling xpath generate-id().
  */
-public class GenerateIDGenerator extends AbstractDatastoreGenerator
+public class GenerateIDGenerator extends AbstractDatastoreGenerator<String>
 {
     /**
      * Constructor.
@@ -46,15 +46,14 @@ public class GenerateIDGenerator extends AbstractDatastoreGenerator
      * @param size Number of elements to reserve.
      * @return The block.
      */
-    protected ValueGenerationBlock reserveBlock(long size)
+    protected ValueGenerationBlock<String> reserveBlock(long size)
     {
         try
         {
             //TODO must provide the node, and not the root. otherwise the id is always generated with same value
             Object doc = connectionProvider.retrieveConnection().getConnection();
             String id = XPathFactory.newInstance().newXPath().evaluate("generate-id(.)", doc);
-            ValueGenerationBlock block = new ValueGenerationBlock(new String[]{id});
-            return block;
+            return new ValueGenerationBlock<String>(new String[]{id});
         }
         catch (Exception e)
         {

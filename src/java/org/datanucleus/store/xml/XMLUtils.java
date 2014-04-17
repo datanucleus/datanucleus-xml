@@ -87,7 +87,7 @@ public class XMLUtils
             // TODO What about nondurable?
 
             // Object not managed so give it a ObjectProvider before returning it
-            sm = ec.newObjectProviderForPersistentClean(id, obj);
+            sm = ec.getNucleusContext().getObjectProviderFactory().newForPersistentClean(ec, id, obj);
             AbstractClassMetaData cmd = sm.getClassMetaData();
 
             // Mark as not loaded all (non-embedded) relation fields

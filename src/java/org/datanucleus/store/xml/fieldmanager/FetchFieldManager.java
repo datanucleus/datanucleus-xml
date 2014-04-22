@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.exceptions.NucleusException;
+import org.datanucleus.identity.IdentityUtils;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.FieldRole;
@@ -103,7 +104,7 @@ public class FetchFieldManager extends AbstractFieldManager
                 final NodeList nList = ((Element) node).getElementsByTagName(mmd.getName());
                 if (nList.getLength() == 1)
                 {
-                    Object id = ec.getApiAdapter().getNewApplicationIdentityObjectId(
+                    Object id = IdentityUtils.getNewApplicationIdentityObjectId(
                         clr.classForName(cmd.getFullClassName(), true), nList.item(0).getFirstChild().getNodeValue());
                     Object related = ec.findObject(id, true, true, null);
                     if (relationType == RelationType.ONE_TO_ONE_BI)
@@ -143,7 +144,7 @@ public class FetchFieldManager extends AbstractFieldManager
                                 throw new NucleusException("Unable to find object of type " + cmd2.getFullClassName() + " with id=" + nodeValue);
                             }
 
-                            Object id = ec.getApiAdapter().getNewApplicationIdentityObjectId(
+                            Object id = IdentityUtils.getNewApplicationIdentityObjectId(
                                 clr.classForName(elementCmd.getFullClassName(), true), nodeValue);
                             Object related = ec.findObject(id, true, true, null);
                             if (relationType == RelationType.ONE_TO_MANY_BI)

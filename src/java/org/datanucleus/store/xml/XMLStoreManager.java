@@ -33,6 +33,8 @@ import org.datanucleus.ExecutionContext;
 import org.datanucleus.PersistenceNucleusContext;
 import org.datanucleus.exceptions.ClassNotResolvedException;
 import org.datanucleus.exceptions.NucleusUserException;
+import org.datanucleus.identity.IdentityUtils;
+import org.datanucleus.identity.SingleFieldId;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.FieldRole;
@@ -115,10 +117,10 @@ public class XMLStoreManager extends AbstractStoreManager
     public String getClassNameForObjectID(Object id, ClassLoaderResolver clr, ExecutionContext ec)
     {
         String targetClassName = null;
-        if (getApiAdapter().isSingleFieldIdentity(id))
+        if (IdentityUtils.isSingleFieldIdentity(id))
         {
             // Using SingleFieldIdentity so can assume that object is of the target class or a subclass
-            targetClassName = getApiAdapter().getTargetClassNameForSingleFieldIdentity(id);
+            targetClassName = ((SingleFieldId)id).getTargetClassName();
             String[] subclasses = getMetaDataManager().getSubclassesForClass(targetClassName, true);
             if (subclasses == null)
             {
@@ -181,7 +183,7 @@ public class XMLStoreManager extends AbstractStoreManager
                 {
                     AbstractMemberMetaData pkmmd = acmd.getMetaDataForMember(pk[j]);
                     String pkElement = XMLUtils.getElementNameForMember(pkmmd, FieldRole.ROLE_FIELD);
-                    Object obj = ec.getApiAdapter().getTargetKeyForSingleFieldIdentity(id);
+                    Object obj = IdentityUtils.getTargetKeyForSingleFieldIdentity(id);
                     expression.append('/').append(pkElement).append("/text()='").append(obj.toString()).append("'"); 
                 }
 

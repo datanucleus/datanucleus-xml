@@ -34,7 +34,6 @@ import org.datanucleus.PersistenceNucleusContext;
 import org.datanucleus.exceptions.ClassNotResolvedException;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.identity.IdentityUtils;
-import org.datanucleus.identity.SingleFieldId;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.FieldRole;
@@ -120,7 +119,7 @@ public class XMLStoreManager extends AbstractStoreManager
         if (IdentityUtils.isSingleFieldIdentity(id))
         {
             // Using SingleFieldIdentity so can assume that object is of the target class or a subclass
-            targetClassName = ((SingleFieldId)id).getTargetClassName();
+            targetClassName = IdentityUtils.getTargetClassNameForIdentitySimple(id);
             String[] subclasses = getMetaDataManager().getSubclassesForClass(targetClassName, true);
             if (subclasses == null)
             {

@@ -27,7 +27,6 @@ import org.datanucleus.exceptions.ClassNotResolvedException;
 import org.datanucleus.exceptions.NucleusDataStoreException;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusObjectNotFoundException;
-import org.datanucleus.identity.IdentityUtils;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.ColumnMetaData;
@@ -83,7 +82,7 @@ public class XMLUtils
             }
             else
             {
-                id = IdentityUtils.getNewApplicationIdentityObjectId(obj, acmd);
+                id = ec.getNucleusContext().getIdentityManager().getApplicationId(obj, acmd);
             }
             // TODO What about nondurable?
 

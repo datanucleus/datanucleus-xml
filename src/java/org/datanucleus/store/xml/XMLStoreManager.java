@@ -223,7 +223,7 @@ public class XMLStoreManager extends AbstractStoreManager
      * @param absFieldNumber Field of the class
      * @return Just returns "generate-id".
      */
-    protected String getStrategyForNative(AbstractClassMetaData cmd, int absFieldNumber)
+    public String getStrategyForNative(AbstractClassMetaData cmd, int absFieldNumber)
     {
         return "generate-id";
     }   

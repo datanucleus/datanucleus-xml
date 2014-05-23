@@ -52,10 +52,6 @@ import org.w3c.dom.Node;
  */
 public class XMLPersistenceHandler extends AbstractPersistenceHandler
 {
-    /** Localiser for messages. */
-    protected static final Localiser LOCALISER_XML = Localiser.getInstance(
-        "org.datanucleus.store.xml.Localisation", XMLStoreManager.class.getClassLoader());
-
     private XPath xpath = XPathFactory.newInstance().newXPath();
 
     /**
@@ -90,7 +86,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             try
             {
                 locateObject(op);
-                throw new NucleusUserException(LOCALISER_XML.msg("XML.Insert.ObjectWithIdAlreadyExists",
+                throw new NucleusUserException(Localiser.msg("XML.Insert.ObjectWithIdAlreadyExists",
                     op.getObjectAsPrintable(), op.getInternalObjectId()));
             }
             catch (NucleusObjectNotFoundException onfe)
@@ -110,7 +106,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
                 startTime = System.currentTimeMillis();
-                NucleusLogger.DATASTORE_PERSIST.debug(LOCALISER_XML.msg("XML.Insert.Start", 
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Insert.Start", 
                     op.getObjectAsPrintable(), op.getInternalObjectId()));
             }
 
@@ -121,8 +117,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, op.getExecutionContext().getClassLoaderResolver());
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_PERSIST.debug(LOCALISER_XML.msg("XML.ExecutionTime", 
-                    (System.currentTimeMillis() - startTime)));
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.ExecutionTime", (System.currentTimeMillis() - startTime)));
             }
             if (ec.getStatistics() != null)
             {
@@ -141,7 +136,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_PERSIST.info(LOCALISER_XML.msg("XML.Insert.ObjectPersisted",
+                NucleusLogger.DATASTORE_PERSIST.info(Localiser.msg("XML.Insert.ObjectPersisted",
                     op.getObjectAsPrintable(), op.getInternalObjectId()));
             }
         }
@@ -187,7 +182,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                     }
                     str.append(acmd.getMetaDataForManagedMemberAtAbsolutePosition(fieldNumbers[i]).getName());
                 }
-                NucleusLogger.DATASTORE_PERSIST.debug(LOCALISER_XML.msg("XML.Update.Start", 
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Update.Start", 
                     op.getObjectAsPrintable(), op.getInternalObjectId(), str));
             }
 
@@ -219,8 +214,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_PERSIST.debug(LOCALISER_XML.msg("XML.ExecutionTime", 
-                    (System.currentTimeMillis() - startTime)));
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.ExecutionTime", (System.currentTimeMillis() - startTime)));
             }
         }
         catch (Exception e)
@@ -253,8 +247,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             long startTime = System.currentTimeMillis();
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_PERSIST.debug(LOCALISER_XML.msg("XML.Delete.Start", 
-                    op.getObjectAsPrintable(), op.getInternalObjectId()));
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Delete.Start", op.getObjectAsPrintable(), op.getInternalObjectId()));
             }
 
             AbstractClassMetaData acmd = op.getClassMetaData();
@@ -268,8 +261,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_PERSIST.debug(LOCALISER_XML.msg("XML.ExecutionTime", 
-                    (System.currentTimeMillis() - startTime)));
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.ExecutionTime", (System.currentTimeMillis() - startTime)));
             }
             if (ec.getStatistics() != null)
             {
@@ -312,7 +304,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                     }
                     fieldsString.append(cmd.getMetaDataForManagedMemberAtAbsolutePosition(fieldNumbers[i]).getName());
                 }
-                NucleusLogger.DATASTORE_RETRIEVE.debug(LOCALISER_XML.msg("XML.Fetch.Start",
+                NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.Fetch.Start",
                     op.getObjectAsPrintable(), op.getInternalObjectId(), fieldsString));
             }
 
@@ -328,8 +320,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
             if (NucleusLogger.DATASTORE_RETRIEVE.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_RETRIEVE.debug(LOCALISER_XML.msg("XML.ExecutionTime", 
-                    (System.currentTimeMillis() - startTime)));
+                NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.ExecutionTime", (System.currentTimeMillis() - startTime)));
             }
             if (ec.getStatistics() != null)
             {
@@ -365,7 +356,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
         AbstractClassMetaData acmd = op.getClassMetaData();
         if (acmd.getIdentityType() == IdentityType.DATASTORE)
         {
-            throw new NucleusException(LOCALISER_XML.msg("XML.DatastoreID"));
+            throw new NucleusException(Localiser.msg("XML.DatastoreID"));
         }
         else if (acmd.getIdentityType() == IdentityType.NONDURABLE)
         {
@@ -380,8 +371,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             long startTime = System.currentTimeMillis();
             if (NucleusLogger.DATASTORE_RETRIEVE.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_RETRIEVE.debug(LOCALISER_XML.msg("XML.Locate.Start", 
-                    op.getObjectAsPrintable(), op.getInternalObjectId()));
+                NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.Locate.Start", op.getObjectAsPrintable(), op.getInternalObjectId()));
             }
 
             ManagedConnection mconn = storeMgr.getConnection(ec);
@@ -401,7 +391,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                     else
                     {
                         // No root, so can't have an object
-                        throw new NucleusObjectNotFoundException(LOCALISER_XML.msg("XML.Object.NotFound", 
+                        throw new NucleusObjectNotFoundException(Localiser.msg("XML.Object.NotFound", 
                             op.getObjectAsPrintable(), op.getInternalObjectId(), expression.toString()));
                     }
                 }
@@ -424,7 +414,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             }
             catch (Exception e)
             {
-                throw new NucleusObjectNotFoundException(LOCALISER_XML.msg("XML.Object.NotFound", 
+                throw new NucleusObjectNotFoundException(Localiser.msg("XML.Object.NotFound", 
                     op.getObjectAsPrintable(), op.getInternalObjectId(), expression));
             }
             finally
@@ -434,13 +424,12 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
             if (NucleusLogger.DATASTORE_RETRIEVE.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_RETRIEVE.debug(LOCALISER_XML.msg("XML.ExecutionTime", 
-                    (System.currentTimeMillis() - startTime)));
+                NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.ExecutionTime", (System.currentTimeMillis() - startTime)));
             }
 
             if (!isStored)
             {
-                throw new NucleusObjectNotFoundException(LOCALISER_XML.msg("XML.Object.NotFound", 
+                throw new NucleusObjectNotFoundException(Localiser.msg("XML.Object.NotFound", 
                     op.getObjectAsPrintable(), op.getInternalObjectId(), expression));
             }
         }

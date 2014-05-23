@@ -21,7 +21,6 @@ import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.IdentityType;
 import org.datanucleus.metadata.InvalidClassMetaDataException;
 import org.datanucleus.metadata.MetaDataListener;
-import org.datanucleus.util.Localiser;
 
 /**
  * Listener for the load of metadata for classes.
@@ -29,10 +28,6 @@ import org.datanucleus.util.Localiser;
  */
 public class XMLMetaDataListener implements MetaDataListener
 {
-    /** Localiser for messages. */
-    protected static final Localiser LOCALISER = Localiser.getInstance(
-        "org.datanucleus.store.xml.Localisation", XMLStoreManager.class.getClassLoader());
-
     /* (non-Javadoc)
      * @see org.datanucleus.metadata.MetaDataListener#loaded(org.datanucleus.metadata.AbstractClassMetaData)
      */
@@ -41,7 +36,7 @@ public class XMLMetaDataListener implements MetaDataListener
         if (cmd.getIdentityType() == IdentityType.DATASTORE && !cmd.isEmbeddedOnly())
         {
             // Datastore id not supported
-            throw new InvalidClassMetaDataException(LOCALISER, "XML.DatastoreID", cmd.getFullClassName());
+            throw new InvalidClassMetaDataException("XML.DatastoreID", cmd.getFullClassName());
         }
     }
 }

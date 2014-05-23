@@ -48,12 +48,6 @@ import org.w3c.dom.Node;
  */
 public class XMLUtils
 {
-    /**
-     * Localiser for messages.
-     */
-    protected static final Localiser LOCALISER = Localiser.getInstance(
-            "org.datanucleus.store.xml.Localisation", XMLStoreManager.class.getClassLoader());
-
     private static XPath xpath = XPathFactory.newInstance().newXPath();
 
     /**
@@ -78,7 +72,7 @@ public class XMLUtils
             Object id = null;
             if (acmd.getIdentityType() == IdentityType.DATASTORE)
             {
-                throw new NucleusException(LOCALISER.msg("XML.DatastoreID"));
+                throw new NucleusException(Localiser.msg("XML.DatastoreID"));
             }
             else
             {
@@ -123,7 +117,7 @@ public class XMLUtils
     {
         if (acmd.getIdentityType() == IdentityType.DATASTORE)
         {
-            throw new NucleusException(LOCALISER.msg("XML.DatastoreID"));
+            throw new NucleusException(Localiser.msg("XML.DatastoreID"));
         }
         else if (acmd.getIdentityType() == IdentityType.APPLICATION)
         {
@@ -202,14 +196,13 @@ public class XMLUtils
         long startTime = System.currentTimeMillis();
         if (NucleusLogger.DATASTORE_RETRIEVE.isDebugEnabled())
         {
-            NucleusLogger.DATASTORE_RETRIEVE.debug(LOCALISER.msg("XML.Find.Start", 
-                op.getObjectAsPrintable(), op.getInternalObjectId()));
+            NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.Find.Start", op.getObjectAsPrintable(), op.getInternalObjectId()));
         }
 
         AbstractClassMetaData acmd = op.getClassMetaData();
         if (acmd.getIdentityType() == IdentityType.DATASTORE)
         {
-            throw new NucleusException(LOCALISER.msg("XML.DatastoreID"));
+            throw new NucleusException(Localiser.msg("XML.DatastoreID"));
         }
         else if (acmd.getIdentityType() == IdentityType.APPLICATION)
         {
@@ -255,8 +248,7 @@ public class XMLUtils
 
         if (NucleusLogger.DATASTORE_RETRIEVE.isDebugEnabled())
         {
-            NucleusLogger.DATASTORE_RETRIEVE.debug(LOCALISER.msg("XML.ExecutionTime", 
-                (System.currentTimeMillis() - startTime)));
+            NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.ExecutionTime", (System.currentTimeMillis() - startTime)));
         }
         return node;
     }

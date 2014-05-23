@@ -46,6 +46,7 @@ import org.datanucleus.store.valuegenerator.AbstractDatastoreGenerator;
 import org.datanucleus.store.valuegenerator.ValueGenerationConnectionProvider;
 import org.datanucleus.store.valuegenerator.ValueGenerator;
 import org.datanucleus.util.ClassUtils;
+import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 import org.w3c.dom.Document;
 
@@ -55,6 +56,11 @@ import org.w3c.dom.Document;
  */
 public class XMLStoreManager extends AbstractStoreManager
 {
+    static
+    {
+        Localiser.registerBundle("org.datanucleus.store.xml.Localisation", XMLStoreManager.class.getClassLoader());
+    }
+
     public static final String JAXB_HANDLER_CLASS_PROPERTY = "datanucleus.xml.jaxbHandlerClass";
     public static final String XML_INDENT_SIZE_PROPERTY = "datanucleus.xml.indentSize";
 

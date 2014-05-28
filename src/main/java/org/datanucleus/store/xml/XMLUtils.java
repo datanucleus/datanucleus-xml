@@ -112,8 +112,7 @@ public class XMLUtils
      * @param clr ClassLoader resolver
      * @return Metadata for the class that this is an instance of.
      */
-    public static AbstractClassMetaData findMetaDataForNode(Document doc, AbstractClassMetaData acmd, 
-            MetaDataManager mmgr, String value, ClassLoaderResolver clr)
+    public static AbstractClassMetaData findMetaDataForNode(Document doc, AbstractClassMetaData acmd, MetaDataManager mmgr, String value, ClassLoaderResolver clr)
     {
         if (acmd.getIdentityType() == IdentityType.DATASTORE)
         {
@@ -374,7 +373,7 @@ public class XMLUtils
      * @param role Role within this field
      * @return The name
      */
-    public static String getElementNameForMember(AbstractMemberMetaData mmd, int role)
+    public static String getElementNameForMember(AbstractMemberMetaData mmd, FieldRole role)
     {
         String name = null;
         if (role == FieldRole.ROLE_COLLECTION_ELEMENT && mmd.hasCollection())

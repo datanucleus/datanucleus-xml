@@ -173,7 +173,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                 startTime = System.currentTimeMillis();
 
                 // Debug information about what fields we are updating
-                StringBuffer str = new StringBuffer();
+                StringBuilder str = new StringBuilder();
                 for (int i=0;i<fieldNumbers.length;i++)
                 {
                     if (i > 0)
@@ -295,7 +295,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             long startTime = System.currentTimeMillis();
             if (NucleusLogger.DATASTORE_RETRIEVE.isDebugEnabled())
             {
-                StringBuffer fieldsString = new StringBuffer();
+                StringBuilder fieldsString = new StringBuilder();
                 for (int i=0;i<fieldNumbers.length;i++)
                 {
                     if (i > 0)

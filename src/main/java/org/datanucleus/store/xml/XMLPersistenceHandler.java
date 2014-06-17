@@ -457,7 +457,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             }
 
             // Get Node for persisting Objects
-            classnode = (Node) doc.getDocumentElement();
+            classnode = doc.getDocumentElement();
         }
         else
         {

@@ -40,7 +40,6 @@ import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.AbstractConnectionFactory;
 import org.datanucleus.store.connection.AbstractManagedConnection;
 import org.datanucleus.store.connection.ManagedConnection;
-import org.datanucleus.store.connection.ManagedConnectionResourceListener;
 import org.datanucleus.util.NucleusLogger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -181,7 +180,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
 
             for (int i=0; i<listeners.size(); i++)
             {
-                ((ManagedConnectionResourceListener)listeners.get(i)).managedConnectionPreClose();
+                listeners.get(i).managedConnectionPreClose();
             }
             try
             {
@@ -205,7 +204,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                 conn = null;
                 for (int i=0; i<listeners.size(); i++)
                 {
-                    ((ManagedConnectionResourceListener)listeners.get(i)).managedConnectionPostClose();
+                    listeners.get(i).managedConnectionPostClose();
                 }
             }
         }

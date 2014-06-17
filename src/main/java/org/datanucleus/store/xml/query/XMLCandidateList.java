@@ -205,10 +205,8 @@ public class XMLCandidateList extends AbstractCandidateLazyLoadList
                                         throw new NucleusUserException("Error in extracting object from XML", jaxbe);
                                     }
                                 }
-                                else
-                                {
-                                    current++;
-                                }
+
+                                current++;
                             }
                         }
                     }

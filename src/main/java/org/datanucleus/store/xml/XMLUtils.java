@@ -74,10 +74,7 @@ public class XMLUtils
             {
                 throw new NucleusException(Localiser.msg("XML.DatastoreID"));
             }
-            else
-            {
-                id = ec.getNucleusContext().getIdentityManager().getApplicationId(obj, acmd);
-            }
+            id = ec.getNucleusContext().getIdentityManager().getApplicationId(obj, acmd);
             // TODO What about nondurable?
 
             // Object not managed so give it a ObjectProvider before returning it
@@ -385,20 +382,15 @@ public class XMLUtils
                 // Use "name" extension for element
                 return mmd.getElementMetaData().getValueForExtension("name");
             }
-            else
+
+            ColumnMetaData[] colmds = (elemmd != null ? elemmd.getColumnMetaData() : null);
+            if (colmds != null && colmds.length > 0 && colmds[0].getName() != null)
             {
-                ColumnMetaData[] colmds = (elemmd != null ? elemmd.getColumnMetaData() : null);
-                if (colmds != null && colmds.length > 0 && colmds[0].getName() != null)
-                {
-                    // Use column name for element
-                    return colmds[0].getName();
-                }
-                else
-                {
-                    // Fallback to "{fieldName}_element"
-                    return mmd.getName().toLowerCase() + "_element";
-                }
+                // Use column name for element
+                return colmds[0].getName();
             }
+            // Fallback to "{fieldName}_element"
+            return mmd.getName().toLowerCase() + "_element";
         }
         else if (role == FieldRole.ROLE_ARRAY_ELEMENT && mmd.hasArray())
         {
@@ -409,20 +401,15 @@ public class XMLUtils
                 // Use "name" extension for element
                 return elemmd.getValueForExtension("name");
             }
-            else
+
+            ColumnMetaData[] colmds = (elemmd != null ? elemmd.getColumnMetaData() : null);
+            if (colmds != null && colmds.length > 0 && colmds[0].getName() != null)
             {
-                ColumnMetaData[] colmds = (elemmd != null ? elemmd.getColumnMetaData() : null);
-                if (colmds != null && colmds.length > 0 && colmds[0].getName() != null)
-                {
-                    // Use column name for element
-                    return colmds[0].getName();
-                }
-                else
-                {
-                    // Fallback to "{fieldName}_element"
-                    return mmd.getName().toLowerCase() + "_element";
-                }
+                // Use column name for element
+                return colmds[0].getName();
             }
+            // Fallback to "{fieldName}_element"
+            return mmd.getName().toLowerCase() + "_element";
         }
         else if (role == FieldRole.ROLE_MAP_KEY && mmd.hasMap())
         {
@@ -433,20 +420,15 @@ public class XMLUtils
                 // Use "name" extension for element
                 return keymd.getValueForExtension("name");
             }
-            else
+
+            ColumnMetaData[] colmds = (keymd != null ? keymd.getColumnMetaData() : null);
+            if (colmds != null && colmds.length > 0 && colmds[0].getName() != null)
             {
-                ColumnMetaData[] colmds = (keymd != null ? keymd.getColumnMetaData() : null);
-                if (colmds != null && colmds.length > 0 && colmds[0].getName() != null)
-                {
-                    // Use column name for key
-                    return colmds[0].getName();
-                }
-                else
-                {
-                    // Fallback to "{fieldName}_key"
-                    return mmd.getName().toLowerCase() + "_key";
-                }
+                // Use column name for key
+                return colmds[0].getName();
             }
+            // Fallback to "{fieldName}_key"
+            return mmd.getName().toLowerCase() + "_key";
         }
         else if (role == FieldRole.ROLE_MAP_VALUE && mmd.hasMap())
         {
@@ -457,20 +439,15 @@ public class XMLUtils
                 // Use "name" extension for element
                 return valuemd.getValueForExtension("name");
             }
-            else
+
+            ColumnMetaData[] colmds = (valuemd != null ? valuemd.getColumnMetaData() : null);
+            if (colmds != null && colmds.length > 0 && colmds[0].getName() != null)
             {
-                ColumnMetaData[] colmds = (valuemd != null ? valuemd.getColumnMetaData() : null);
-                if (colmds != null && colmds.length > 0 && colmds[0].getName() != null)
-                {
-                    // Use column name for value
-                    return colmds[0].getName();
-                }
-                else
-                {
-                    // Fallback to "{fieldName}_value"
-                    return mmd.getName().toLowerCase() + "_value";
-                }
+                // Use column name for value
+                return colmds[0].getName();
             }
+            // Fallback to "{fieldName}_value"
+            return mmd.getName().toLowerCase() + "_value";
         }
         else
         {

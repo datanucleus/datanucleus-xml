@@ -372,7 +372,6 @@ public class XMLUtils
      */
     public static String getElementNameForMember(AbstractMemberMetaData mmd, FieldRole role)
     {
-        String name = null;
         if (role == FieldRole.ROLE_COLLECTION_ELEMENT && mmd.hasCollection())
         {
             // Element of a collection
@@ -452,7 +451,7 @@ public class XMLUtils
         else
         {
             // Field as a whole
-            if (name == null && mmd.hasExtension("name"))
+            if (mmd.hasExtension("name"))
             {
                 return mmd.getValueForExtension("name");
             }

@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.exceptions.NucleusException;
+import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.FieldRole;
@@ -123,22 +124,24 @@ public class FetchFieldManager extends AbstractFieldManager
                 if (mmd.hasCollection())
                 {
                     AbstractClassMetaData cmd2 = ec.getMetaDataManager().getMetaDataForClass(mmd.getCollection().getElementType(), clr);
+                    if (cmd2 == null)
+                    {
+                        throw new NucleusUserException("Cannot find metadata for element type " + mmd.getCollection().getElementType() + " for field=" + mmd.getFullFieldName());
+                    }
 
                     // Get value being unmarshalled
                     op.copyFieldsFromObject(value, new int[]{fieldNumber});
                     Collection collection = (Collection) op.provideField(fieldNumber);
 
                     // Make sure we get the right type of element (allow for inheritance)
-                    NodeList nLists = ((Element) node).getElementsByTagName(
-                        XMLUtils.getElementNameForMember(mmd, FieldRole.ROLE_COLLECTION_ELEMENT));
+                    NodeList nLists = ((Element) node).getElementsByTagName(XMLUtils.getElementNameForMember(mmd, FieldRole.ROLE_COLLECTION_ELEMENT));
                     for (int i = 0; i < nLists.getLength(); i++)
                     {
                         final String nodeValue = nLists.item(i).getFirstChild().getNodeValue();
                         if (nodeValue != null && nodeValue.trim().length() > 0)
                         {
-                            final AbstractClassMetaData elementCmd = XMLUtils.findMetaDataForNode(doc, cmd2,
-                                ec.getMetaDataManager(), nodeValue, clr);
-                            if (elementCmd == null && cmd2 != null)
+                            final AbstractClassMetaData elementCmd = XMLUtils.findMetaDataForNode(doc, cmd2, ec.getMetaDataManager(), nodeValue, clr);
+                            if (elementCmd == null)
                             {
                                 throw new NucleusException("Unable to find object of type " + cmd2.getFullClassName() + " with id=" + nodeValue);
                             }

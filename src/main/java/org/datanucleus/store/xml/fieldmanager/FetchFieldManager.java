@@ -32,6 +32,7 @@ import org.datanucleus.metadata.FieldRole;
 import org.datanucleus.metadata.RelationType;
 import org.datanucleus.state.ObjectProvider;
 import org.datanucleus.store.fieldmanager.AbstractFieldManager;
+import org.datanucleus.store.types.SCOUtils;
 import org.datanucleus.store.xml.XMLStoreManager;
 import org.datanucleus.store.xml.XMLUtils;
 import org.datanucleus.util.NucleusLogger;
@@ -159,7 +160,7 @@ public class FetchFieldManager extends AbstractFieldManager
                         }
                     }
 
-                    return op.wrapSCOField(fieldNumber, collection, false, false, true);
+                    return SCOUtils.wrapSCOField(op, fieldNumber, collection, false, false, true);
                 }
                 else if (mmd.hasArray())
                 {

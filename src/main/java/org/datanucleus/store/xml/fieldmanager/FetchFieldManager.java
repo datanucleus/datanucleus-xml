@@ -160,7 +160,7 @@ public class FetchFieldManager extends AbstractFieldManager
                         }
                     }
 
-                    return SCOUtils.wrapSCOField(op, fieldNumber, collection, false, false, true);
+                    return SCOUtils.wrapSCOField(op, fieldNumber, collection, true);
                 }
                 else if (mmd.hasArray())
                 {

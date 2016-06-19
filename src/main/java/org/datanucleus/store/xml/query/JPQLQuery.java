@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.exceptions.NucleusException;
-import org.datanucleus.query.evaluator.JPQLEvaluator;
-import org.datanucleus.query.evaluator.JavaQueryEvaluator;
+import org.datanucleus.query.inmemory.JPQLInMemoryEvaluator;
+import org.datanucleus.query.inmemory.JavaQueryInMemoryEvaluator;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.query.AbstractJPQLQuery;
@@ -93,7 +93,7 @@ public class JPQLQuery extends AbstractJPQLQuery
             }
 
             // Apply any result restrictions to the XML XPath results
-            JavaQueryEvaluator resultMapper = new JPQLEvaluator(this, candidates, compilation, 
+            JavaQueryInMemoryEvaluator resultMapper = new JPQLInMemoryEvaluator(this, candidates, compilation, 
                 parameters, ec.getClassLoaderResolver());
             Collection results = resultMapper.execute(true, true, true, true, true);
 

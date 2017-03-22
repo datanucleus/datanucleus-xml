@@ -125,7 +125,7 @@ public class XMLStoreManager extends AbstractStoreManager
         if (IdentityUtils.isSingleFieldIdentity(id))
         {
             // Using SingleFieldIdentity so can assume that object is of the target class or a subclass
-            targetClassName = IdentityUtils.getTargetClassNameForIdentitySimple(id);
+            targetClassName = IdentityUtils.getTargetClassNameForIdentity(id);
             String[] subclasses = getMetaDataManager().getSubclassesForClass(targetClassName, true);
             if (subclasses == null)
             {

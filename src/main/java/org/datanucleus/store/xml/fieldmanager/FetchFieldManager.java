@@ -18,12 +18,16 @@
  **********************************************************************/
 package org.datanucleus.store.xml.fieldmanager;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 
 import javax.xml.bind.JAXBException;
 
 import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
+import org.datanucleus.enhancement.Persistable;
+import org.datanucleus.enhancement.StateManager;
 import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -35,6 +39,7 @@ import org.datanucleus.store.fieldmanager.AbstractFieldManager;
 import org.datanucleus.store.types.SCOUtils;
 import org.datanucleus.store.xml.XMLStoreManager;
 import org.datanucleus.store.xml.XMLUtils;
+import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -76,7 +81,7 @@ public class FetchFieldManager extends AbstractFieldManager
 
     public String fetchStringField(int fieldNumber)
     {
-        op.copyFieldsFromObject(value, new int[]{fieldNumber});
+        copyFieldsFromObject(op, value, new int[]{fieldNumber});
         return (String) op.provideField(fieldNumber);
     }
 
@@ -89,7 +94,7 @@ public class FetchFieldManager extends AbstractFieldManager
         if (relationType == RelationType.NONE)
         {
             // Object-based field (non-relation)
-            op.copyFieldsFromObject(value, new int[]{fieldNumber});
+            copyFieldsFromObject(op, value, new int[]{fieldNumber});
             return op.provideField(fieldNumber);
         }
         else if (mmd.getEmbeddedMetaData() != null)
@@ -131,7 +136,7 @@ public class FetchFieldManager extends AbstractFieldManager
                     }
 
                     // Get value being unmarshalled
-                    op.copyFieldsFromObject(value, new int[]{fieldNumber});
+                    copyFieldsFromObject(op, value, new int[]{fieldNumber});
                     Collection collection = (Collection) op.provideField(fieldNumber);
 
                     // Make sure we get the right type of element (allow for inheritance)
@@ -181,49 +186,108 @@ public class FetchFieldManager extends AbstractFieldManager
 
     public boolean fetchBooleanField(int fieldNumber)
     {
-        op.copyFieldsFromObject(value, new int[]{fieldNumber});
+        copyFieldsFromObject(op, value, new int[]{fieldNumber});
         return (Boolean) op.provideField(fieldNumber);
     }
 
     public byte fetchByteField(int fieldNumber)
     {
-        op.copyFieldsFromObject(value, new int[]{fieldNumber});
+        copyFieldsFromObject(op, value, new int[]{fieldNumber});
         return (Byte) op.provideField(fieldNumber);
     }
 
     public char fetchCharField(int fieldNumber)
     {
-        op.copyFieldsFromObject(value, new int[]{fieldNumber});
+        copyFieldsFromObject(op, value, new int[]{fieldNumber});
         return (Character) op.provideField(fieldNumber);
     }
 
     public double fetchDoubleField(int fieldNumber)
     {
-        op.copyFieldsFromObject(value, new int[]{fieldNumber});
+        copyFieldsFromObject(op, value, new int[]{fieldNumber});
         return (Double) op.provideField(fieldNumber);
     }
 
     public float fetchFloatField(int fieldNumber)
     {
-        op.copyFieldsFromObject(value, new int[]{fieldNumber});
+        copyFieldsFromObject(op, value, new int[]{fieldNumber});
         return (Float) op.provideField(fieldNumber);
     }
 
     public int fetchIntField(int fieldNumber)
     {
-        op.copyFieldsFromObject(value, new int[]{fieldNumber});
+        copyFieldsFromObject(op, value, new int[]{fieldNumber});
         return (Integer) op.provideField(fieldNumber);
     }
 
     public long fetchLongField(int fieldNumber)
     {
-        op.copyFieldsFromObject(value, new int[]{fieldNumber});
+        copyFieldsFromObject(op, value, new int[]{fieldNumber});
         return (Long) op.provideField(fieldNumber);
     }
 
     public short fetchShortField(int fieldNumber)
     {
-        op.copyFieldsFromObject(value, new int[]{fieldNumber});
+        copyFieldsFromObject(op, value, new int[]{fieldNumber});
         return (Short) op.provideField(fieldNumber);
+    }
+
+    /**
+     * Convenience method to update our object with the field values from the passed object.
+     * Objects need to be of the same type, and the other object should not have a StateManager.
+     * @param obj The object that we should copy fields from
+     * @param fieldNumbers Numbers of fields to copy
+     */
+    public static void copyFieldsFromObject(ObjectProvider op, Object obj, int[] fieldNumbers)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+        Persistable myPC = (Persistable) op.getObject();
+        if (!obj.getClass().getName().equals(myPC.getClass().getName()))
+        {
+            return;
+        }
+        if (!(obj instanceof Persistable))
+        {
+            throw new NucleusUserException("Must be Persistable");
+        }
+        Persistable pc = (Persistable)obj;
+
+        // Assign the new object to this StateManager temporarily so that we can copy its fields
+        replaceStateManagerForPersistable(pc, op);
+        myPC.dnCopyFields(pc, fieldNumbers);
+
+        // Remove the StateManager from the other object
+        replaceStateManagerForPersistable(pc, null);
+
+        // Set the loaded flags now that we have copied
+        op.markFieldsAsLoaded(fieldNumbers);
+    }
+
+    /**
+     * Utility to update the passed object with the passed StateManager (can be null).
+     * @param pc The object to update
+     * @param sm The new state manager
+     */
+    protected static void replaceStateManagerForPersistable(final Persistable pc, final StateManager sm)
+    {
+        try
+        {
+            // Calls to pc.dnReplaceStateManager must be run privileged
+            AccessController.doPrivileged(new PrivilegedAction()
+            {
+                public Object run() 
+                {
+                    pc.dnReplaceStateManager(sm);
+                    return null;
+                }
+            });
+        }
+        catch (SecurityException e)
+        {
+            throw new NucleusUserException(Localiser.msg("026000"), e).setFatal();
+        }
     }
 }

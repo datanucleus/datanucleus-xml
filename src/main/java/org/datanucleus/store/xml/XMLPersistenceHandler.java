@@ -96,7 +96,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
         }
 
         ExecutionContext ec = op.getExecutionContext();
-        ManagedConnection mconn = storeMgr.getConnection(ec);
+        ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
         try
         {
             Document doc = (Document) mconn.getConnection();
@@ -163,7 +163,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
         AbstractClassMetaData acmd = op.getClassMetaData();
         ExecutionContext ec = op.getExecutionContext();
-        ManagedConnection mconn = storeMgr.getConnection(ec);
+        ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
         try
         {
             Document doc = (Document) mconn.getConnection();
@@ -240,7 +240,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
         assertReadOnlyForUpdateOfObject(op);
 
         ExecutionContext ec = op.getExecutionContext();
-        ManagedConnection mconn = storeMgr.getConnection(ec);
+        ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
         try
         {
             Document doc = (Document) mconn.getConnection();
@@ -289,7 +289,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
     {
         AbstractClassMetaData cmd = op.getClassMetaData();
         ExecutionContext ec = op.getExecutionContext();
-        ManagedConnection mconn = storeMgr.getConnection(ec);
+        ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
         try
         {
             long startTime = System.currentTimeMillis();
@@ -374,7 +374,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                 NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.Locate.Start", op.getObjectAsPrintable(), op.getInternalObjectId()));
             }
 
-            ManagedConnection mconn = storeMgr.getConnection(ec);
+            ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
             StringBuilder expression = null;
             try
             {

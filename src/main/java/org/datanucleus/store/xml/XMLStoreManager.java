@@ -156,7 +156,7 @@ public class XMLStoreManager extends AbstractStoreManager
      */
     public String getClassNameForIdentity(ExecutionContext ec, String[] possibleNames, Object id)
     {
-        ManagedConnection mconn = getConnection(ec);
+        ManagedConnection mconn = connectionMgr.getConnection(ec);
         try
         {
             Document doc = (Document) mconn.getConnection();
@@ -259,7 +259,7 @@ public class XMLStoreManager extends AbstractStoreManager
                     ManagedConnection mconn;
                     public ManagedConnection retrieveConnection()
                     {
-                        mconn = getConnection(ec);
+                        mconn = connectionMgr.getConnection(ec);
                         return mconn;
                     }
                     public void releaseConnection() 

@@ -74,7 +74,7 @@ public class JDOQLQuery extends AbstractJDOQLQuery
 
     protected Object performExecute(Map parameters)
     {
-        ManagedConnection mconn = getStoreManager().getConnection(ec);
+        ManagedConnection mconn = getStoreManager().getConnectionManager().getConnection(ec);
         try
         {
             long startTime = System.currentTimeMillis();

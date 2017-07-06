@@ -32,6 +32,7 @@ import org.datanucleus.ClassLoaderResolver;
 import org.datanucleus.ExecutionContext;
 import org.datanucleus.PersistenceNucleusContext;
 import org.datanucleus.exceptions.ClassNotResolvedException;
+import org.datanucleus.exceptions.NucleusException;
 import org.datanucleus.exceptions.NucleusUserException;
 import org.datanucleus.identity.IdentityUtils;
 import org.datanucleus.metadata.AbstractClassMetaData;
@@ -42,9 +43,12 @@ import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.store.AbstractStoreManager;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ManagedConnection;
+import org.datanucleus.store.query.Query;
 import org.datanucleus.store.valuegenerator.AbstractDatastoreGenerator;
 import org.datanucleus.store.valuegenerator.ValueGenerationConnectionProvider;
 import org.datanucleus.store.valuegenerator.ValueGenerator;
+import org.datanucleus.store.xml.query.JDOQLQuery;
+import org.datanucleus.store.xml.query.JPQLQuery;
 import org.datanucleus.util.ClassUtils;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
@@ -108,6 +112,57 @@ public class XMLStoreManager extends AbstractStoreManager
     {
         nucleusContext.getMetaDataManager().deregisterListener(metadataListener);
         super.close();
+    }
+
+    /* (non-Javadoc)
+     * @see org.datanucleus.store.StoreManager#newQuery(java.lang.String, org.datanucleus.ExecutionContext)
+     */
+    @Override
+    public Query newQuery(String language, ExecutionContext ec)
+    {
+        if (language.equalsIgnoreCase("JDOQL"))
+        {
+            return new JDOQLQuery(this, ec);
+        }
+        else if (language.equalsIgnoreCase("JPQL"))
+        {
+            return new JPQLQuery(this, ec);
+        }
+        throw new NucleusException("Error creating query for language " + language);
+    }
+
+    /* (non-Javadoc)
+     * @see org.datanucleus.store.StoreManager#newQuery(java.lang.String, org.datanucleus.ExecutionContext, java.lang.String)
+     */
+    @Override
+    public Query newQuery(String language, ExecutionContext ec, String queryString)
+    {
+        if (language.equalsIgnoreCase("JDOQL"))
+        {
+            return new JDOQLQuery(this, ec, queryString);
+        }
+        else if (language.equalsIgnoreCase("JPQL"))
+        {
+            return new JPQLQuery(this, ec, queryString);
+        }
+        throw new NucleusException("Error creating query for language " + language);
+    }
+
+    /* (non-Javadoc)
+     * @see org.datanucleus.store.StoreManager#newQuery(java.lang.String, org.datanucleus.ExecutionContext, org.datanucleus.store.query.Query)
+     */
+    @Override
+    public Query newQuery(String language, ExecutionContext ec, Query q)
+    {
+        if (language.equalsIgnoreCase("JDOQL"))
+        {
+            return new JDOQLQuery(this, ec, (JDOQLQuery) q);
+        }
+        else if (language.equalsIgnoreCase("JPQL"))
+        {
+            return new JPQLQuery(this, ec, (JPQLQuery) q);
+        }
+        throw new NucleusException("Error creating query for language " + language);
     }
 
     public JAXBHandler getJAXBHandler()

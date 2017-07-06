@@ -23,16 +23,9 @@ Contributors:
         <store-manager class-name="org.datanucleus.store.xml.XMLStoreManager" key="xml" url-key="xml"/>
     </extension>
 
-    <!-- QUERY LANGUAGES -->
-    <extension point="org.datanucleus.store_query_query">
-        <query class-name="org.datanucleus.store.xml.query.JDOQLQuery" datastore="xml" name="JDOQL"/>
-        <query class-name="org.datanucleus.store.xml.query.JPQLQuery" datastore="xml" name="JPQL"/>
-    </extension>
-
     <!-- CONNECTION FACTORY -->
     <extension point="org.datanucleus.store_connectionfactory">
-        <connectionfactory name="xml" class-name="org.datanucleus.store.xml.ConnectionFactoryImpl" 
-            transactional="true" datastore="xml"/>
+        <connectionfactory name="xml" class-name="org.datanucleus.store.xml.ConnectionFactoryImpl" transactional="true" datastore="xml"/>
     </extension>
                 
     <!-- VALUE GENERATORS -->

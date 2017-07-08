@@ -284,7 +284,7 @@ public class XMLStoreManager extends AbstractStoreManager
      * @param absFieldNumber Field of the class
      * @return Just returns "generate-id".
      */
-    public String getStrategyForNative(AbstractClassMetaData cmd, int absFieldNumber)
+    public String getValueGenerationStrategyForNative(AbstractClassMetaData cmd, int absFieldNumber)
     {
         return "generate-id";
     }   
@@ -297,7 +297,7 @@ public class XMLStoreManager extends AbstractStoreManager
      * @param ec ExecutionContext
      * @return The next value.
      */
-    protected Object getStrategyValueForGenerator(ValueGenerator generator, final ExecutionContext ec)
+    protected Object getNextValueForValueGenerator(ValueGenerator generator, final ExecutionContext ec)
     {
         Object oid = null;
         synchronized (generator)

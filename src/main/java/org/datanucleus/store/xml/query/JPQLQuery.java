@@ -80,7 +80,7 @@ public class JPQLQuery extends AbstractJPQLQuery
             long startTime = System.currentTimeMillis();
             if (NucleusLogger.QUERY.isDebugEnabled())
             {
-                NucleusLogger.QUERY.debug(Localiser.msg("021046", "JPQL", getSingleStringQuery(), null));
+                NucleusLogger.QUERY.debug(Localiser.msg("021046", Query.LANGUAGE_JPQL, getSingleStringQuery(), null));
             }
             List candidates = null;
             if (candidateCollection == null)
@@ -99,7 +99,7 @@ public class JPQLQuery extends AbstractJPQLQuery
 
             if (NucleusLogger.QUERY.isDebugEnabled())
             {
-                NucleusLogger.QUERY.debug(Localiser.msg("021074", "JPQL", 
+                NucleusLogger.QUERY.debug(Localiser.msg("021074", Query.LANGUAGE_JPQL, 
                     "" + (System.currentTimeMillis() - startTime)));
             }
 

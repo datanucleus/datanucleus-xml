@@ -21,23 +21,25 @@ import java.util.Properties;
 
 import javax.xml.xpath.XPathFactory;
 
-import org.datanucleus.store.valuegenerator.AbstractDatastoreGenerator;
+import org.datanucleus.store.StoreManager;
+import org.datanucleus.store.valuegenerator.AbstractConnectedGenerator;
 import org.datanucleus.store.valuegenerator.ValueGenerationBlock;
 import org.datanucleus.store.valuegenerator.ValueGenerationException;
 
 /**
  * Value generator for calling xpath generate-id().
  */
-public class GenerateIDGenerator extends AbstractDatastoreGenerator<String>
+public class GenerateIDGenerator extends AbstractConnectedGenerator<String>
 {
     /**
      * Constructor.
+     * @param storeMgr StoreManager
      * @param name Symbolic name of the generator
      * @param props Any properties controlling its behaviour.
      */
-    public GenerateIDGenerator(String name, Properties props)
+    public GenerateIDGenerator(StoreManager storeMgr, String name, Properties props)
     {
-        super(name, props);
+        super(storeMgr, name, props);
     }
 
     /**

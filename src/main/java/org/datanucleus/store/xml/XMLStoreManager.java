@@ -44,7 +44,7 @@ import org.datanucleus.store.AbstractStoreManager;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.query.Query;
-import org.datanucleus.store.valuegenerator.AbstractDatastoreGenerator;
+import org.datanucleus.store.valuegenerator.AbstractConnectedGenerator;
 import org.datanucleus.store.valuegenerator.ValueGenerationConnectionProvider;
 import org.datanucleus.store.valuegenerator.ValueGenerator;
 import org.datanucleus.store.xml.query.JDOQLQuery;
@@ -306,7 +306,7 @@ public class XMLStoreManager extends AbstractStoreManager
             // Note : this is synchronised since we don't want to risk handing out this generator
             // while its connectionProvider is set to that of a different ExecutionContext
             // It maybe would be good to change ValueGenerator to have a next taking the connectionProvider
-            if (generator instanceof AbstractDatastoreGenerator)
+            if (generator instanceof AbstractConnectedGenerator)
             {
                 // datastore-based generator so set the connection provider, using connection for PM
                 ValueGenerationConnectionProvider connProvider = new ValueGenerationConnectionProvider()
@@ -323,7 +323,7 @@ public class XMLStoreManager extends AbstractStoreManager
                         mconn = null;
                     }
                 };
-                ((AbstractDatastoreGenerator)generator).setConnectionProvider(connProvider);
+                ((AbstractConnectedGenerator)generator).setConnectionProvider(connProvider);
             }
 
             oid = generator.next();

@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>datanucleus-xml</artifactId>
-    <version>5.1.0-m3-SNAPSHOT</version>
+    <version>5.1.0-release</version>
 
     <name>DataNucleus XML plugin</name>
     <description>

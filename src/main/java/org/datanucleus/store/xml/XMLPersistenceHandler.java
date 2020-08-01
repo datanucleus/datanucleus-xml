@@ -106,23 +106,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
                 startTime = System.currentTimeMillis();
-                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Insert.Start", 
-                    op.getObjectAsPrintable(), op.getInternalObjectId()));
-            }
-
-            // Get the XPath for the objects of this class
-            Node classnode = getNodeForClass(doc, acmd);
-
-            // Marshall the object
-            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, op.getExecutionContext().getClassLoaderResolver());
-            if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
-            {
-                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.ExecutionTime", (System.currentTimeMillis() - startTime)));
-            }
-            if (ec.getStatistics() != null)
-            {
-                ec.getStatistics().incrementNumWrites();
-                ec.getStatistics().incrementInsertCount();
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Insert.Start", op.getObjectAsPrintable(), op.getInternalObjectId()));
             }
 
             if (acmd.isVersioned())
@@ -130,14 +114,27 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                 // TODO versioned object so set its version
             }
 
-            // Perform any reachability
-            int[] fieldNumbers = op.getClassMetaData().getAllMemberPositions();
+            // Enable handling of reachable objects
+            int[] fieldNumbers = op.getClassMetaData().getRelationMemberPositions(ec.getClassLoaderResolver());
             op.provideFields(fieldNumbers, new PersistFieldManager(op, true));
+
+            // Marshall the object using the XPath for objects of this class
+            Node classnode = getNodeForClass(doc, acmd);
+            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, op.getExecutionContext().getClassLoaderResolver());
+            if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
+            {
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.ExecutionTime", (System.currentTimeMillis() - startTime)));
+            }
+
+            if (ec.getStatistics() != null)
+            {
+                ec.getStatistics().incrementNumWrites();
+                ec.getStatistics().incrementInsertCount();
+            }
 
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_PERSIST.info(Localiser.msg("XML.Insert.ObjectPersisted",
-                    op.getObjectAsPrintable(), op.getInternalObjectId()));
+                NucleusLogger.DATASTORE_PERSIST.info(Localiser.msg("XML.Insert.ObjectPersisted", op.getObjectAsPrintable(), op.getInternalObjectId()));
             }
         }
         catch (Exception e)
@@ -182,8 +179,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                     }
                     str.append(acmd.getMetaDataForManagedMemberAtAbsolutePosition(fieldNumbers[i]).getName());
                 }
-                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Update.Start", 
-                    op.getObjectAsPrintable(), op.getInternalObjectId(), str));
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Update.Start", op.getObjectAsPrintable(), op.getInternalObjectId(), str));
             }
 
             if (acmd.isVersioned())
@@ -192,19 +188,19 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                 // TODO Implement version checks
             }
 
-            // Get the XPath for the objects of this class
-            Node classnode = getNodeForClass(doc, acmd);
-
             // Make sure we have all fields loaded that need to be (removing the node will lose them temporarily)
             op.loadUnloadedFields();
 
-            // Remove old node and replace with new
+            // Enable handling of reachable objects. TODO Only do this on the relation fields that are in "fieldNumbers"
+            op.provideFields(fieldNumbers, new PersistFieldManager(op, false));
+
+            // Remove old node
             Node node = XMLUtils.findNode(doc, op);
             node.getParentNode().removeChild(node);
-            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, op.getExecutionContext().getClassLoaderResolver());
 
-            // Handle reachability so any reachable objects in the updated fields are also persisted
-            op.provideFields(fieldNumbers, new PersistFieldManager(op, false));
+            // Add new node
+            Node classnode = getNodeForClass(doc, acmd); // Get the XPath for objects of this class
+            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, op.getExecutionContext().getClassLoaderResolver());
 
             if (ec.getStatistics() != null)
             {

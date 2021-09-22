@@ -72,7 +72,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Insert the object managed by the passed ObjectProvider into the XML datastore.
-     * @param op ObjectProvider
+     * @param op StateManager
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      */
     public void insertObject(final ObjectProvider op)
@@ -149,7 +149,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Updates the specified fields of the object managed by the passed ObjectProvider in the XML datastore.
-     * @param op ObjectProvider
+     * @param op StateManager
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      * @throws NucleusOptimisticException thrown if version checking fails
      */
@@ -225,7 +225,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Deletes the object managed by the passed ObjectProvider from the XML datastore.
-     * @param op ObjectProvider
+     * @param op StateManager
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      * @throws NucleusOptimisticException thrown if version checking fails on an optimistic transaction 
      *     for this object
@@ -277,7 +277,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Method to retrieve the specified fields of the object managed by the ObjectProvider.
-     * @param op ObjectProvider
+     * @param op StateManager
      * @param fieldNumbers Absolute field numbers to retrieve
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      */
@@ -344,7 +344,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Locates the object managed by the passed ObjectProvider into the XML datastore.
-     * @param op ObjectProvider
+     * @param op StateManager
      * @throws NucleusDataStoreException if an error occurs in locating the object
      */
     public void locateObject(ObjectProvider op)

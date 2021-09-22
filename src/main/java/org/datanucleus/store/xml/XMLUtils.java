@@ -181,7 +181,7 @@ public class XMLUtils
     /**
      * Accessor for the Node with the specified identity (if present).
      * @param doc The document
-     * @param op ObjectProvider
+     * @param op StateManager
      * @return The object
      * @throws NucleusObjectNotFoundException if the document is null
      */

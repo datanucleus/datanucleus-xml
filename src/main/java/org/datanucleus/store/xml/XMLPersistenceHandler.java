@@ -72,22 +72,22 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Insert the object managed by the passed ObjectProvider into the XML datastore.
-     * @param op StateManager
+     * @param sm StateManager
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      */
-    public void insertObject(final ObjectProvider op)
+    public void insertObject(final ObjectProvider sm)
     {
         // Check if read-only so update not permitted
-        assertReadOnlyForUpdateOfObject(op);
+        assertReadOnlyForUpdateOfObject(sm);
 
-        if (op.getClassMetaData().getIdentityType() == IdentityType.APPLICATION)
+        if (sm.getClassMetaData().getIdentityType() == IdentityType.APPLICATION)
         {
             // Check existence of the object since XML doesn't enforce application identity
             try
             {
-                locateObject(op);
+                locateObject(sm);
                 throw new NucleusUserException(Localiser.msg("XML.Insert.ObjectWithIdAlreadyExists",
-                    op.getObjectAsPrintable(), op.getInternalObjectId()));
+                    sm.getObjectAsPrintable(), sm.getInternalObjectId()));
             }
             catch (NucleusObjectNotFoundException onfe)
             {
@@ -95,18 +95,18 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             }
         }
 
-        ExecutionContext ec = op.getExecutionContext();
+        ExecutionContext ec = sm.getExecutionContext();
         ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
         try
         {
             Document doc = (Document) mconn.getConnection();
 
-            AbstractClassMetaData acmd = op.getClassMetaData();
+            AbstractClassMetaData acmd = sm.getClassMetaData();
             long startTime = 0;
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
                 startTime = System.currentTimeMillis();
-                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Insert.Start", op.getObjectAsPrintable(), op.getInternalObjectId()));
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Insert.Start", sm.getObjectAsPrintable(), sm.getInternalObjectId()));
             }
 
             if (acmd.isVersioned())
@@ -115,12 +115,12 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             }
 
             // Enable handling of reachable objects
-            int[] fieldNumbers = op.getClassMetaData().getRelationMemberPositions(ec.getClassLoaderResolver());
-            op.provideFields(fieldNumbers, new PersistFieldManager(op, true));
+            int[] fieldNumbers = sm.getClassMetaData().getRelationMemberPositions(ec.getClassLoaderResolver());
+            sm.provideFields(fieldNumbers, new PersistFieldManager(sm, true));
 
             // Marshall the object using the XPath for objects of this class
             Node classnode = getNodeForClass(doc, acmd);
-            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, op.getExecutionContext().getClassLoaderResolver());
+            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(sm.getObject(), classnode, sm.getExecutionContext().getClassLoaderResolver());
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
                 NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.ExecutionTime", (System.currentTimeMillis() - startTime)));
@@ -134,7 +134,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_PERSIST.info(Localiser.msg("XML.Insert.ObjectPersisted", op.getObjectAsPrintable(), op.getInternalObjectId()));
+                NucleusLogger.DATASTORE_PERSIST.info(Localiser.msg("XML.Insert.ObjectPersisted", sm.getObjectAsPrintable(), sm.getInternalObjectId()));
             }
         }
         catch (Exception e)
@@ -149,17 +149,17 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Updates the specified fields of the object managed by the passed ObjectProvider in the XML datastore.
-     * @param op StateManager
+     * @param sm StateManager
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      * @throws NucleusOptimisticException thrown if version checking fails
      */
-    public void updateObject(final ObjectProvider op, int[] fieldNumbers)
+    public void updateObject(final ObjectProvider sm, int[] fieldNumbers)
     {
         // Check if read-only so update not permitted
-        assertReadOnlyForUpdateOfObject(op);
+        assertReadOnlyForUpdateOfObject(sm);
 
-        AbstractClassMetaData acmd = op.getClassMetaData();
-        ExecutionContext ec = op.getExecutionContext();
+        AbstractClassMetaData acmd = sm.getClassMetaData();
+        ExecutionContext ec = sm.getExecutionContext();
         ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
         try
         {
@@ -179,7 +179,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                     }
                     str.append(acmd.getMetaDataForManagedMemberAtAbsolutePosition(fieldNumbers[i]).getName());
                 }
-                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Update.Start", op.getObjectAsPrintable(), op.getInternalObjectId(), str));
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Update.Start", sm.getObjectAsPrintable(), sm.getInternalObjectId(), str));
             }
 
             if (acmd.isVersioned())
@@ -189,18 +189,18 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             }
 
             // Make sure we have all fields loaded that need to be (removing the node will lose them temporarily)
-            op.loadUnloadedFields();
+            sm.loadUnloadedFields();
 
             // Enable handling of reachable objects. TODO Only do this on the relation fields that are in "fieldNumbers"
-            op.provideFields(fieldNumbers, new PersistFieldManager(op, false));
+            sm.provideFields(fieldNumbers, new PersistFieldManager(sm, false));
 
             // Remove old node
-            Node node = XMLUtils.findNode(doc, op);
+            Node node = XMLUtils.findNode(doc, sm);
             node.getParentNode().removeChild(node);
 
             // Add new node
             Node classnode = getNodeForClass(doc, acmd); // Get the XPath for objects of this class
-            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(op.getObject(), classnode, op.getExecutionContext().getClassLoaderResolver());
+            ((XMLStoreManager)storeMgr).getJAXBHandler().marshall(sm.getObject(), classnode, sm.getExecutionContext().getClassLoaderResolver());
 
             if (ec.getStatistics() != null)
             {
@@ -225,17 +225,16 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Deletes the object managed by the passed ObjectProvider from the XML datastore.
-     * @param op StateManager
+     * @param sm StateManager
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
-     * @throws NucleusOptimisticException thrown if version checking fails on an optimistic transaction 
-     *     for this object
+     * @throws NucleusOptimisticException thrown if version checking fails on an optimistic transaction for this object
      */
-    public void deleteObject(ObjectProvider op)
+    public void deleteObject(ObjectProvider sm)
     {
         // Check if read-only so update not permitted
-        assertReadOnlyForUpdateOfObject(op);
+        assertReadOnlyForUpdateOfObject(sm);
 
-        ExecutionContext ec = op.getExecutionContext();
+        ExecutionContext ec = sm.getExecutionContext();
         ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
         try
         {
@@ -243,16 +242,16 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             long startTime = System.currentTimeMillis();
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Delete.Start", op.getObjectAsPrintable(), op.getInternalObjectId()));
+                NucleusLogger.DATASTORE_PERSIST.debug(Localiser.msg("XML.Delete.Start", sm.getObjectAsPrintable(), sm.getInternalObjectId()));
             }
 
-            AbstractClassMetaData acmd = op.getClassMetaData();
+            AbstractClassMetaData acmd = sm.getClassMetaData();
             if (acmd.isVersioned())
             {
                 // TODO Implement version checks
             }
 
-            Node node = XMLUtils.findNode(doc, op);
+            Node node = XMLUtils.findNode(doc, sm);
             node.getParentNode().removeChild(node);
 
             if (NucleusLogger.DATASTORE_PERSIST.isDebugEnabled())
@@ -277,14 +276,14 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Method to retrieve the specified fields of the object managed by the ObjectProvider.
-     * @param op StateManager
+     * @param sm StateManager
      * @param fieldNumbers Absolute field numbers to retrieve
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      */
-    public void fetchObject(final ObjectProvider op, int[] fieldNumbers)
+    public void fetchObject(final ObjectProvider sm, int[] fieldNumbers)
     {
-        AbstractClassMetaData cmd = op.getClassMetaData();
-        ExecutionContext ec = op.getExecutionContext();
+        AbstractClassMetaData cmd = sm.getClassMetaData();
+        ExecutionContext ec = sm.getExecutionContext();
         ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
         try
         {
@@ -301,13 +300,13 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                     fieldsString.append(cmd.getMetaDataForManagedMemberAtAbsolutePosition(fieldNumbers[i]).getName());
                 }
                 NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.Fetch.Start",
-                    op.getObjectAsPrintable(), op.getInternalObjectId(), fieldsString));
+                    sm.getObjectAsPrintable(), sm.getInternalObjectId(), fieldsString));
             }
 
             Document doc = (Document) mconn.getConnection();
 
             // Find the object from XML, and populate the required fields
-            op.replaceFields(fieldNumbers, new FetchFieldManager(op, doc));
+            sm.replaceFields(fieldNumbers, new FetchFieldManager(sm, doc));
 
             if (cmd.isVersioned())
             {
@@ -344,12 +343,12 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
 
     /**
      * Locates the object managed by the passed ObjectProvider into the XML datastore.
-     * @param op StateManager
+     * @param sm StateManager
      * @throws NucleusDataStoreException if an error occurs in locating the object
      */
-    public void locateObject(ObjectProvider op)
+    public void locateObject(ObjectProvider sm)
     {
-        AbstractClassMetaData acmd = op.getClassMetaData();
+        AbstractClassMetaData acmd = sm.getClassMetaData();
         if (acmd.getIdentityType() == IdentityType.DATASTORE)
         {
             throw new NucleusException(Localiser.msg("XML.DatastoreID"));
@@ -360,14 +359,14 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
         }
         else
         {
-            ExecutionContext ec = op.getExecutionContext();
+            ExecutionContext ec = sm.getExecutionContext();
             boolean isStored = false;
 
             // Get any node with these key values from XML
             long startTime = System.currentTimeMillis();
             if (NucleusLogger.DATASTORE_RETRIEVE.isDebugEnabled())
             {
-                NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.Locate.Start", op.getObjectAsPrintable(), op.getInternalObjectId()));
+                NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.Locate.Start", sm.getObjectAsPrintable(), sm.getInternalObjectId()));
             }
 
             ManagedConnection mconn = storeMgr.getConnectionManager().getConnection(ec);
@@ -388,7 +387,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                     {
                         // No root, so can't have an object
                         throw new NucleusObjectNotFoundException(Localiser.msg("XML.Object.NotFound", 
-                            op.getObjectAsPrintable(), op.getInternalObjectId(), expression.toString()));
+                            sm.getObjectAsPrintable(), sm.getInternalObjectId(), expression.toString()));
                     }
                 }
                 expression.append("/").append(XMLUtils.getElementNameForClass(acmd));
@@ -397,7 +396,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
                 {
                     AbstractMemberMetaData pkmmd = acmd.getMetaDataForMember(pk[i]);
                     String pkElement = XMLUtils.getElementNameForMember(pkmmd, FieldRole.ROLE_FIELD);
-                    Object obj = op.provideField(acmd.getPKMemberPositions()[i]);
+                    Object obj = sm.provideField(acmd.getPKMemberPositions()[i]);
                     expression.append("/").append(pkElement).append("/text()='").append(obj.toString()).append("'"); 
                 }
 
@@ -411,7 +410,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             catch (Exception e)
             {
                 throw new NucleusObjectNotFoundException(Localiser.msg("XML.Object.NotFound", 
-                    op.getObjectAsPrintable(), op.getInternalObjectId(), expression));
+                    sm.getObjectAsPrintable(), sm.getInternalObjectId(), expression));
             }
             finally
             {
@@ -426,7 +425,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
             if (!isStored)
             {
                 throw new NucleusObjectNotFoundException(Localiser.msg("XML.Object.NotFound", 
-                    op.getObjectAsPrintable(), op.getInternalObjectId(), expression));
+                    sm.getObjectAsPrintable(), sm.getInternalObjectId(), expression));
             }
         }
     }

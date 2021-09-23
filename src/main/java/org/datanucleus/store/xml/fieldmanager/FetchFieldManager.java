@@ -51,7 +51,7 @@ import org.w3c.dom.NodeList;
  */
 public class FetchFieldManager extends AbstractFieldManager
 {
-    ObjectProvider op;
+    ObjectProvider sm;
 
     /** Unmarshalled object. */
     Object value;
@@ -62,16 +62,16 @@ public class FetchFieldManager extends AbstractFieldManager
     /** Node representing the object having its fields fetched. */
     Node node;
 
-    public FetchFieldManager(ObjectProvider op, Document doc)
+    public FetchFieldManager(ObjectProvider sm, Document doc)
     {
-        this.op = op;
+        this.sm = sm;
         this.doc = doc;
 
-        ExecutionContext ec = op.getExecutionContext();
-        node = XMLUtils.findNode(doc, op);
+        ExecutionContext ec = sm.getExecutionContext();
+        node = XMLUtils.findNode(doc, sm);
         try
         {
-            value = ((XMLStoreManager)ec.getStoreManager()).getJAXBHandler().unmarshall(op.getObject().getClass(), node, op.getExecutionContext().getClassLoaderResolver());
+            value = ((XMLStoreManager)ec.getStoreManager()).getJAXBHandler().unmarshall(sm.getObject().getClass(), node, sm.getExecutionContext().getClassLoaderResolver());
         }
         catch (JAXBException e)
         {
@@ -81,21 +81,21 @@ public class FetchFieldManager extends AbstractFieldManager
 
     public String fetchStringField(int fieldNumber)
     {
-        copyFieldsFromObject(op, value, new int[]{fieldNumber});
-        return (String) op.provideField(fieldNumber);
+        copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+        return (String) sm.provideField(fieldNumber);
     }
 
     public Object fetchObjectField(int fieldNumber)
     {
-        ExecutionContext ec = op.getExecutionContext();
+        ExecutionContext ec = sm.getExecutionContext();
         ClassLoaderResolver clr = ec.getClassLoaderResolver();
-        AbstractMemberMetaData mmd = op.getClassMetaData().getMetaDataForManagedMemberAtAbsolutePosition(fieldNumber);
+        AbstractMemberMetaData mmd = sm.getClassMetaData().getMetaDataForManagedMemberAtAbsolutePosition(fieldNumber);
         RelationType relationType = mmd.getRelationType(clr);
         if (relationType == RelationType.NONE)
         {
             // Object-based field (non-relation)
-            copyFieldsFromObject(op, value, new int[]{fieldNumber});
-            return op.provideField(fieldNumber);
+            copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+            return sm.provideField(fieldNumber);
         }
         else if (mmd.getEmbeddedMetaData() != null)
         {
@@ -117,8 +117,8 @@ public class FetchFieldManager extends AbstractFieldManager
                     {
                         // Set other side of relation to avoid reloading
                         ObjectProvider relatedSM = ec.findObjectProvider(related);
-                        AbstractMemberMetaData relatedMmd = mmd.getRelatedMemberMetaDataForObject(clr, op.getObject(), related);
-                        relatedSM.replaceField(relatedMmd.getAbsoluteFieldNumber(), op.getObject());
+                        AbstractMemberMetaData relatedMmd = mmd.getRelatedMemberMetaDataForObject(clr, sm.getObject(), related);
+                        relatedSM.replaceField(relatedMmd.getAbsoluteFieldNumber(), sm.getObject());
                     }
                     return related;
                 }
@@ -136,8 +136,8 @@ public class FetchFieldManager extends AbstractFieldManager
                     }
 
                     // Get value being unmarshalled
-                    copyFieldsFromObject(op, value, new int[]{fieldNumber});
-                    Collection collection = (Collection) op.provideField(fieldNumber);
+                    copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+                    Collection collection = (Collection) sm.provideField(fieldNumber);
 
                     // Make sure we get the right type of element (allow for inheritance)
                     NodeList nLists = ((Element) node).getElementsByTagName(XMLUtils.getElementNameForMember(mmd, FieldRole.ROLE_COLLECTION_ELEMENT));
@@ -159,13 +159,13 @@ public class FetchFieldManager extends AbstractFieldManager
                                 // Set other side of relation to avoid reloading
                                 ObjectProvider relatedSM = ec.findObjectProvider(related);
                                 AbstractMemberMetaData relatedMmd = relatedSM.getClassMetaData().getMetaDataForMember(mmd.getMappedBy());
-                                relatedSM.replaceField(relatedMmd.getAbsoluteFieldNumber(), op.getObject());
+                                relatedSM.replaceField(relatedMmd.getAbsoluteFieldNumber(), sm.getObject());
                             }
                             collection.add(related);
                         }
                     }
 
-                    return SCOUtils.wrapSCOField(op, fieldNumber, collection, true);
+                    return SCOUtils.wrapSCOField(sm, fieldNumber, collection, true);
                 }
                 else if (mmd.hasArray())
                 {
@@ -186,50 +186,50 @@ public class FetchFieldManager extends AbstractFieldManager
 
     public boolean fetchBooleanField(int fieldNumber)
     {
-        copyFieldsFromObject(op, value, new int[]{fieldNumber});
-        return (Boolean) op.provideField(fieldNumber);
+        copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+        return (Boolean) sm.provideField(fieldNumber);
     }
 
     public byte fetchByteField(int fieldNumber)
     {
-        copyFieldsFromObject(op, value, new int[]{fieldNumber});
-        return (Byte) op.provideField(fieldNumber);
+        copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+        return (Byte) sm.provideField(fieldNumber);
     }
 
     public char fetchCharField(int fieldNumber)
     {
-        copyFieldsFromObject(op, value, new int[]{fieldNumber});
-        return (Character) op.provideField(fieldNumber);
+        copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+        return (Character) sm.provideField(fieldNumber);
     }
 
     public double fetchDoubleField(int fieldNumber)
     {
-        copyFieldsFromObject(op, value, new int[]{fieldNumber});
-        return (Double) op.provideField(fieldNumber);
+        copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+        return (Double) sm.provideField(fieldNumber);
     }
 
     public float fetchFloatField(int fieldNumber)
     {
-        copyFieldsFromObject(op, value, new int[]{fieldNumber});
-        return (Float) op.provideField(fieldNumber);
+        copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+        return (Float) sm.provideField(fieldNumber);
     }
 
     public int fetchIntField(int fieldNumber)
     {
-        copyFieldsFromObject(op, value, new int[]{fieldNumber});
-        return (Integer) op.provideField(fieldNumber);
+        copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+        return (Integer) sm.provideField(fieldNumber);
     }
 
     public long fetchLongField(int fieldNumber)
     {
-        copyFieldsFromObject(op, value, new int[]{fieldNumber});
-        return (Long) op.provideField(fieldNumber);
+        copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+        return (Long) sm.provideField(fieldNumber);
     }
 
     public short fetchShortField(int fieldNumber)
     {
-        copyFieldsFromObject(op, value, new int[]{fieldNumber});
-        return (Short) op.provideField(fieldNumber);
+        copyFieldsFromObject(sm, value, new int[]{fieldNumber});
+        return (Short) sm.provideField(fieldNumber);
     }
 
     /**
@@ -238,13 +238,13 @@ public class FetchFieldManager extends AbstractFieldManager
      * @param obj The object that we should copy fields from
      * @param fieldNumbers Numbers of fields to copy
      */
-    public static void copyFieldsFromObject(ObjectProvider op, Object obj, int[] fieldNumbers)
+    public static void copyFieldsFromObject(ObjectProvider sm, Object obj, int[] fieldNumbers)
     {
         if (obj == null)
         {
             return;
         }
-        Persistable myPC = (Persistable) op.getObject();
+        Persistable myPC = (Persistable) sm.getObject();
         if (!obj.getClass().getName().equals(myPC.getClass().getName()))
         {
             return;
@@ -256,14 +256,14 @@ public class FetchFieldManager extends AbstractFieldManager
         Persistable pc = (Persistable)obj;
 
         // Assign the new object to this StateManager temporarily so that we can copy its fields
-        replaceStateManagerForPersistable(pc, op);
+        replaceStateManagerForPersistable(pc, sm);
         myPC.dnCopyFields(pc, fieldNumbers);
 
         // Remove the StateManager from the other object
         replaceStateManagerForPersistable(pc, null);
 
         // Set the loaded flags now that we have copied
-        op.markFieldsAsLoaded(fieldNumbers);
+        sm.markFieldsAsLoaded(fieldNumbers);
     }
 
     /**

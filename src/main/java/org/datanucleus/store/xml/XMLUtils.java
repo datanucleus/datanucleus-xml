@@ -181,21 +181,21 @@ public class XMLUtils
     /**
      * Accessor for the Node with the specified identity (if present).
      * @param doc The document
-     * @param op StateManager
+     * @param sm StateManager
      * @return The object
      * @throws NucleusObjectNotFoundException if the document is null
      */
-    public static Node findNode(Document doc, ObjectProvider op)
+    public static Node findNode(Document doc, ObjectProvider sm)
     {
         Node node = null;
 
         long startTime = System.currentTimeMillis();
         if (NucleusLogger.DATASTORE_RETRIEVE.isDebugEnabled())
         {
-            NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.Find.Start", op.getObjectAsPrintable(), op.getInternalObjectId()));
+            NucleusLogger.DATASTORE_RETRIEVE.debug(Localiser.msg("XML.Find.Start", sm.getObjectAsPrintable(), sm.getInternalObjectId()));
         }
 
-        AbstractClassMetaData acmd = op.getClassMetaData();
+        AbstractClassMetaData acmd = sm.getClassMetaData();
         if (acmd.getIdentityType() == IdentityType.DATASTORE)
         {
             throw new NucleusException(Localiser.msg("XML.DatastoreID"));
@@ -221,7 +221,7 @@ public class XMLUtils
                 {
                     AbstractMemberMetaData pkmmd = acmd.getMetaDataForMember(pk[i]);
                     String pkElement = XMLUtils.getElementNameForMember(pkmmd, FieldRole.ROLE_FIELD);
-                    Object obj = op.provideField(acmd.getPKMemberPositions()[i]);
+                    Object obj = sm.provideField(acmd.getPKMemberPositions()[i]);
                     expression += "/" + pkElement + "[text()='" + obj.toString() + "']";
                 }
                 expression += "/..";

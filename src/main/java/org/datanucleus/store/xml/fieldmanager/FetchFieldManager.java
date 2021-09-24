@@ -34,7 +34,7 @@ import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.FieldRole;
 import org.datanucleus.metadata.RelationType;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.store.fieldmanager.AbstractFieldManager;
 import org.datanucleus.store.types.SCOUtils;
 import org.datanucleus.store.xml.XMLStoreManager;
@@ -51,7 +51,7 @@ import org.w3c.dom.NodeList;
  */
 public class FetchFieldManager extends AbstractFieldManager
 {
-    ObjectProvider sm;
+    DNStateManager sm;
 
     /** Unmarshalled object. */
     Object value;
@@ -62,7 +62,7 @@ public class FetchFieldManager extends AbstractFieldManager
     /** Node representing the object having its fields fetched. */
     Node node;
 
-    public FetchFieldManager(ObjectProvider sm, Document doc)
+    public FetchFieldManager(DNStateManager sm, Document doc)
     {
         this.sm = sm;
         this.doc = doc;
@@ -116,7 +116,7 @@ public class FetchFieldManager extends AbstractFieldManager
                     if (relationType == RelationType.ONE_TO_ONE_BI)
                     {
                         // Set other side of relation to avoid reloading
-                        ObjectProvider relatedSM = ec.findObjectProvider(related);
+                        DNStateManager relatedSM = ec.findStateManager(related);
                         AbstractMemberMetaData relatedMmd = mmd.getRelatedMemberMetaDataForObject(clr, sm.getObject(), related);
                         relatedSM.replaceField(relatedMmd.getAbsoluteFieldNumber(), sm.getObject());
                     }
@@ -157,7 +157,7 @@ public class FetchFieldManager extends AbstractFieldManager
                             if (relationType == RelationType.ONE_TO_MANY_BI)
                             {
                                 // Set other side of relation to avoid reloading
-                                ObjectProvider relatedSM = ec.findObjectProvider(related);
+                                DNStateManager relatedSM = ec.findStateManager(related);
                                 AbstractMemberMetaData relatedMmd = relatedSM.getClassMetaData().getMetaDataForMember(mmd.getMappedBy());
                                 relatedSM.replaceField(relatedMmd.getAbsoluteFieldNumber(), sm.getObject());
                             }
@@ -238,7 +238,7 @@ public class FetchFieldManager extends AbstractFieldManager
      * @param obj The object that we should copy fields from
      * @param fieldNumbers Numbers of fields to copy
      */
-    public static void copyFieldsFromObject(ObjectProvider sm, Object obj, int[] fieldNumbers)
+    public static void copyFieldsFromObject(DNStateManager sm, Object obj, int[] fieldNumbers)
     {
         if (obj == null)
         {

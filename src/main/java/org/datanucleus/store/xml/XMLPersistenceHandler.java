@@ -35,7 +35,7 @@ import org.datanucleus.metadata.AbstractClassMetaData;
 import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.FieldRole;
 import org.datanucleus.metadata.IdentityType;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.store.AbstractPersistenceHandler;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ManagedConnection;
@@ -71,11 +71,11 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
     }
 
     /**
-     * Insert the object managed by the passed ObjectProvider into the XML datastore.
+     * Insert the object managed by the passed StateManager into the XML datastore.
      * @param sm StateManager
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      */
-    public void insertObject(final ObjectProvider sm)
+    public void insertObject(final DNStateManager sm)
     {
         // Check if read-only so update not permitted
         assertReadOnlyForUpdateOfObject(sm);
@@ -148,12 +148,12 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
     }
 
     /**
-     * Updates the specified fields of the object managed by the passed ObjectProvider in the XML datastore.
+     * Updates the specified fields of the object managed by the passed StateManager in the XML datastore.
      * @param sm StateManager
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      * @throws NucleusOptimisticException thrown if version checking fails
      */
-    public void updateObject(final ObjectProvider sm, int[] fieldNumbers)
+    public void updateObject(final DNStateManager sm, int[] fieldNumbers)
     {
         // Check if read-only so update not permitted
         assertReadOnlyForUpdateOfObject(sm);
@@ -224,12 +224,12 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
     }
 
     /**
-     * Deletes the object managed by the passed ObjectProvider from the XML datastore.
+     * Deletes the object managed by the passed StateManager from the XML datastore.
      * @param sm StateManager
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      * @throws NucleusOptimisticException thrown if version checking fails on an optimistic transaction for this object
      */
-    public void deleteObject(ObjectProvider sm)
+    public void deleteObject(DNStateManager sm)
     {
         // Check if read-only so update not permitted
         assertReadOnlyForUpdateOfObject(sm);
@@ -280,7 +280,7 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
      * @param fieldNumbers Absolute field numbers to retrieve
      * @throws NucleusDataStoreException when an error occurs in the datastore communication
      */
-    public void fetchObject(final ObjectProvider sm, int[] fieldNumbers)
+    public void fetchObject(final DNStateManager sm, int[] fieldNumbers)
     {
         AbstractClassMetaData cmd = sm.getClassMetaData();
         ExecutionContext ec = sm.getExecutionContext();
@@ -342,11 +342,11 @@ public class XMLPersistenceHandler extends AbstractPersistenceHandler
     }
 
     /**
-     * Locates the object managed by the passed ObjectProvider into the XML datastore.
+     * Locates the object managed by the passed StateManager into the XML datastore.
      * @param sm StateManager
      * @throws NucleusDataStoreException if an error occurs in locating the object
      */
-    public void locateObject(ObjectProvider sm)
+    public void locateObject(DNStateManager sm)
     {
         AbstractClassMetaData acmd = sm.getClassMetaData();
         if (acmd.getIdentityType() == IdentityType.DATASTORE)

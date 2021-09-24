@@ -37,7 +37,7 @@ import org.datanucleus.metadata.KeyMetaData;
 import org.datanucleus.metadata.MetaDataManager;
 import org.datanucleus.metadata.RelationType;
 import org.datanucleus.metadata.ValueMetaData;
-import org.datanucleus.state.ObjectProvider;
+import org.datanucleus.state.DNStateManager;
 import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 import org.w3c.dom.Document;
@@ -52,20 +52,20 @@ public class XMLUtils
 
     /**
      * Convenience method to take an object returned by XML (from a query for example), and prepare it for passing to
-     * the user. Makes sure there is a ObjectProvider connected, with all fields marked as loaded.
+     * the user. Makes sure there is a StateManager connected, with all fields marked as loaded.
      * @param obj The object (from XML)
      * @param ec execution context
      * @param acmd ClassMetaData for the object
      * @return StateManager for this object
      */
-    public static ObjectProvider prepareXMLObjectForUse(Object obj, ExecutionContext ec, AbstractClassMetaData acmd)
+    public static DNStateManager prepareXMLObjectForUse(Object obj, ExecutionContext ec, AbstractClassMetaData acmd)
     {
         if (!ec.getApiAdapter().isPersistable(obj))
         {
             return null;
         }
 
-        ObjectProvider sm = ec.findObjectProvider(obj);
+        DNStateManager sm = ec.findStateManager(obj);
         if (sm == null)
         {
             // Find the identity
@@ -77,8 +77,8 @@ public class XMLUtils
             id = ec.getNucleusContext().getIdentityManager().getApplicationId(obj, acmd);
             // TODO What about nondurable?
 
-            // Object not managed so give it a ObjectProvider before returning it
-            sm = ec.getNucleusContext().getObjectProviderFactory().newForPersistentClean(ec, id, obj);
+            // Object not managed so give it a StateManager before returning it
+            sm = ec.getNucleusContext().getStateManagerFactory().newForPersistentClean(ec, id, obj);
             AbstractClassMetaData cmd = sm.getClassMetaData();
 
             // Mark as not loaded all (non-embedded) relation fields
@@ -185,7 +185,7 @@ public class XMLUtils
      * @return The object
      * @throws NucleusObjectNotFoundException if the document is null
      */
-    public static Node findNode(Document doc, ObjectProvider sm)
+    public static Node findNode(Document doc, DNStateManager sm)
     {
         Node node = null;
 

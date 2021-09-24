@@ -56,7 +56,7 @@ public class XMLUtils
      * @param obj The object (from XML)
      * @param ec execution context
      * @param acmd ClassMetaData for the object
-     * @return The ObjectProvider for this object
+     * @return StateManager for this object
      */
     public static ObjectProvider prepareXMLObjectForUse(Object obj, ExecutionContext ec, AbstractClassMetaData acmd)
     {

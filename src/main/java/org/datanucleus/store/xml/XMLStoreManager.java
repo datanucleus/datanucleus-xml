@@ -201,8 +201,7 @@ public class XMLStoreManager extends AbstractStoreManager
     }
 
     /**
-     * Method to return which of the possible class names for an identity corresponds to an object
-     * in the datastore. 
+     * Method to return which of the possible class names for an identity corresponds to an object in the datastore. 
      * ONLY SUPPORTS SINGLE-FIELD IDENTITY.
      * @param ec execution context
      * @param possibleNames The possible class names of the object
@@ -268,6 +267,7 @@ public class XMLStoreManager extends AbstractStoreManager
      * Accessor for the supported options in string form.
      * @return The supported options
      */
+    @Override
     public Collection getSupportedOptions()
     {
         Set<String> set = new HashSet<String>();
@@ -276,27 +276,32 @@ public class XMLStoreManager extends AbstractStoreManager
         set.add(StoreManager.OPTION_ORM);
         return set;
     }
-    
+
     /**
-     * Method defining which value-strategy to use when the user specifies "native".
+     * Method defining which value-strategy to use when the user specifies "native" for datastore-identity.
      * Returns "generate-id" no matter what the field is. Override if your datastore requires something else.
      * @param cmd Class requiring the strategy
-     * @param absFieldNumber Field of the class
      * @return Just returns "generate-id".
      */
-    public String getValueGenerationStrategyForNative(AbstractClassMetaData cmd, int absFieldNumber)
+    @Override
+    public String getValueGenerationStrategyForNative(AbstractClassMetaData cmd)
     {
         return "generate-id";
     }   
-    
+
     /**
-     * Accessor for the next value from the specified generator.
-     * This implementation simply returns generator.next(). Any case where the generator requires
-     * datastore connections should override this method.
-     * @param generator The generator
-     * @param ec ExecutionContext
-     * @return The next value.
+     * Method defining which value-strategy to use when the user specifies "native" for a member.
+     * Returns "generate-id" no matter what the field is.
+     * @param mmd Member requiring the strategy
+     * @return Just returns "generate-id".
      */
+    @Override
+    public String getValueGenerationStrategyForNative(AbstractMemberMetaData mmd)
+    {
+        return "generate-id";
+    }   
+
+    @Override
     protected Object getNextValueForValueGenerator(ValueGenerator generator, final ExecutionContext ec)
     {
         Object oid = null;

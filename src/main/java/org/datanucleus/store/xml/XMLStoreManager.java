@@ -65,8 +65,8 @@ public class XMLStoreManager extends AbstractStoreManager
         Localiser.registerBundle("org.datanucleus.store.xml.Localisation", XMLStoreManager.class.getClassLoader());
     }
 
-    public static final String JAXB_HANDLER_CLASS_PROPERTY = "datanucleus.xml.jaxbHandlerClass";
-    public static final String XML_INDENT_SIZE_PROPERTY = "datanucleus.xml.indentSize";
+    public static final String JAXB_HANDLER_CLASS_PROPERTY = "datanucleus.xml.jaxbhandlerclass";
+    public static final String XML_INDENT_SIZE_PROPERTY = "datanucleus.xml.indentsize";
 
     JAXBHandler jaxbHandler;
     MetaDataListener metadataListener;

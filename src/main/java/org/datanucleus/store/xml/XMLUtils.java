@@ -89,7 +89,7 @@ public class XMLUtils
                 if (mmd.getRelationType(ec.getClassLoaderResolver()) != RelationType.NONE && 
                     mmd.getEmbeddedMetaData() == null)
                 {
-                    sm.unloadField(mmd.getName());
+                    sm.unloadField(i);
                 }
             }
         }

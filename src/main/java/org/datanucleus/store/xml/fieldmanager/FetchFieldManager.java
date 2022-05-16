@@ -18,8 +18,6 @@
  **********************************************************************/
 package org.datanucleus.store.xml.fieldmanager;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collection;
 
 import javax.xml.bind.JAXBException;
@@ -39,7 +37,6 @@ import org.datanucleus.store.fieldmanager.AbstractFieldManager;
 import org.datanucleus.store.types.SCOUtils;
 import org.datanucleus.store.xml.XMLStoreManager;
 import org.datanucleus.store.xml.XMLUtils;
-import org.datanucleus.util.Localiser;
 import org.datanucleus.util.NucleusLogger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -273,21 +270,6 @@ public class FetchFieldManager extends AbstractFieldManager
      */
     protected static void replaceStateManagerForPersistable(final Persistable pc, final StateManager sm)
     {
-        try
-        {
-            // Calls to pc.dnReplaceStateManager must be run privileged
-            AccessController.doPrivileged(new PrivilegedAction()
-            {
-                public Object run() 
-                {
-                    pc.dnReplaceStateManager(sm);
-                    return null;
-                }
-            });
-        }
-        catch (SecurityException e)
-        {
-            throw new NucleusUserException(Localiser.msg("026000"), e).setFatal();
-        }
+        pc.dnReplaceStateManager(sm);
     }
 }

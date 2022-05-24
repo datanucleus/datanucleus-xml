@@ -40,6 +40,7 @@ import org.datanucleus.metadata.AbstractMemberMetaData;
 import org.datanucleus.metadata.FieldRole;
 import org.datanucleus.metadata.MetaDataListener;
 import org.datanucleus.metadata.MetaDataManager;
+import org.datanucleus.metadata.QueryLanguage;
 import org.datanucleus.store.AbstractStoreManager;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ManagedConnection;
@@ -120,11 +121,11 @@ public class XMLStoreManager extends AbstractStoreManager
     @Override
     public Query newQuery(String language, ExecutionContext ec)
     {
-        if (language.equalsIgnoreCase(Query.LANGUAGE_JDOQL))
+        if (language.equals(QueryLanguage.JDOQL.name()))
         {
             return new JDOQLQuery(this, ec);
         }
-        else if (language.equalsIgnoreCase(Query.LANGUAGE_JPQL))
+        else if (language.equals(QueryLanguage.JPQL.name()))
         {
             return new JPQLQuery(this, ec);
         }
@@ -137,11 +138,11 @@ public class XMLStoreManager extends AbstractStoreManager
     @Override
     public Query newQuery(String language, ExecutionContext ec, String queryString)
     {
-        if (language.equalsIgnoreCase(Query.LANGUAGE_JDOQL))
+        if (language.equals(QueryLanguage.JDOQL.name()))
         {
             return new JDOQLQuery(this, ec, queryString);
         }
-        else if (language.equalsIgnoreCase(Query.LANGUAGE_JPQL))
+        else if (language.equals(QueryLanguage.JPQL.name()))
         {
             return new JPQLQuery(this, ec, queryString);
         }
@@ -154,11 +155,11 @@ public class XMLStoreManager extends AbstractStoreManager
     @Override
     public Query newQuery(String language, ExecutionContext ec, Query q)
     {
-        if (language.equalsIgnoreCase(Query.LANGUAGE_JDOQL))
+        if (language.equals(QueryLanguage.JDOQL.name()))
         {
             return new JDOQLQuery(this, ec, (JDOQLQuery) q);
         }
-        else if (language.equalsIgnoreCase(Query.LANGUAGE_JPQL))
+        else if (language.equals(QueryLanguage.JPQL.name()))
         {
             return new JPQLQuery(this, ec, (JPQLQuery) q);
         }

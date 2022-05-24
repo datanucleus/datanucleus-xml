@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.datanucleus.ExecutionContext;
+import org.datanucleus.metadata.QueryLanguage;
 import org.datanucleus.store.StoreManager;
 import org.datanucleus.store.connection.ManagedConnection;
 import org.datanucleus.store.query.AbstractJDOQLQuery;
@@ -80,7 +81,7 @@ public class JDOQLQuery extends AbstractJDOQLQuery
             long startTime = System.currentTimeMillis();
             if (NucleusLogger.QUERY.isDebugEnabled())
             {
-                NucleusLogger.QUERY.debug(Localiser.msg("021046", Query.LANGUAGE_JDOQL, getSingleStringQuery(), null));
+                NucleusLogger.QUERY.debug(Localiser.msg("021046", QueryLanguage.JDOQL.name(), getSingleStringQuery(), null));
             }
             List candidates = null;
             if (candidateCollection != null)
@@ -100,7 +101,7 @@ public class JDOQLQuery extends AbstractJDOQLQuery
 
             if (NucleusLogger.QUERY.isDebugEnabled())
             {
-                NucleusLogger.QUERY.debug(Localiser.msg("021074", Query.LANGUAGE_JDOQL, 
+                NucleusLogger.QUERY.debug(Localiser.msg("021074", QueryLanguage.JDOQL.name(), 
                     "" + (System.currentTimeMillis() - startTime)));
             }
 

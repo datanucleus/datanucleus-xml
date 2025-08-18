@@ -89,7 +89,7 @@ public class JAXBRIAnnotationReader extends AbstractInlineAnnotationReaderImpl<T
      */
     public Annotation[] getAllFieldAnnotations(Field field, Locatable loc)
     {
-        Annotation[] anns = ((AnnotatedElement) field).getAnnotations();
+        Annotation[] anns = field.getAnnotations();
         List<Annotation> annotations = new ArrayList<Annotation>();
 
         for (int i = 0; i < anns.length; i++)
@@ -119,7 +119,7 @@ public class JAXBRIAnnotationReader extends AbstractInlineAnnotationReaderImpl<T
      */
     public Annotation[] getAllMethodAnnotations(Method method, Locatable loc)
     {
-        Annotation[] anns = ((AnnotatedElement) method).getAnnotations();
+        Annotation[] anns = method.getAnnotations();
         List<Annotation> annotations = new ArrayList<Annotation>();
 
         for (int i = 0; i < anns.length; i++)

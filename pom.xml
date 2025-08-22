@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>datanucleus-xml</artifactId>
-    <version>6.0.1</version>
+    <version>6.0.2-SNAPSHOT</version>
 
     <name>DataNucleus XML plugin</name>
     <description>
@@ -19,7 +19,7 @@
         <connection>scm:git:git@github.com:datanucleus/${project.artifactId}.git</connection>
         <developerConnection>scm:git:git@github.com:datanucleus/${project.artifactId}.git</developerConnection>
         <url>https://github.com/datanucleus/${project.artifactId}</url>
-      <tag>datanucleus-xml-6.0.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <properties>

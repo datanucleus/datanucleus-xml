@@ -152,6 +152,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
         {
             if (commitOnRelease)
             {
+                // Write to XML file
                 try
                 {
                     DOMSource source = new DOMSource((Document)conn);
@@ -160,7 +161,6 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
                     Transformer t = getTransformer();
                     t.transform(source, result);
                     os.close();
-                    conn = null;
                 }
                 catch (Exception e)
                 {
@@ -184,6 +184,7 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
             }
             try
             {
+                // Write to XML file
                 try
                 {
                     DOMSource source = new DOMSource((Document)conn);
@@ -201,7 +202,9 @@ public class ConnectionFactoryImpl extends AbstractConnectionFactory
             }
             finally
             {
+                // Close XML file
                 conn = null;
+
                 for (int i=0; i<listeners.size(); i++)
                 {
                     listeners.get(i).managedConnectionPostClose();
